@@ -2,7 +2,7 @@ import './bootstrap';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-export default function App()
+function App()
 {
     return (
         <h1>Kinodvizh</h1>
