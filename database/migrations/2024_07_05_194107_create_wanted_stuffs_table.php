@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('wanted_stuffs', function (Blueprint $table) {
             $table->id();
+            $table->morphs('wantable');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

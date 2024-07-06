@@ -13,6 +13,22 @@ return new class extends Migration
     {
         Schema::create('series', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('director');
+            $table->year('productionYear');
+            $table->date('releaseDate');
+            $table->string('scenarioMaker');
+            $table->string('producer');
+            $table->unsignedBigInteger('budget');
+            $table->unsignedBigInteger('fees');
+            $table->unsignedTinyInteger('agelimit');
+            $table->unsignedTinyInteger('seasonsCount');
+            $table->time('seriesDuration');
+            $table->text('description');
+            $table->unsignedDecimal('expertRating', 3, 1);
+            $table->unsignedDecimal('rating', 3, 1);
+            $table->unsignedBigInteger('expertMarksCount');
+            $table->unsignedBigInteger('marksCount');
             $table->timestamps();
         });
     }

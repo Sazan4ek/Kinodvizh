@@ -17,7 +17,20 @@ class FilmFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'director' => fake()->firstName().' '.fake()->lastName(),
+            'productionYear' => fake()->year(),
+            'releaseDate' => fake()->date(), 
+            'scenarioMaker' => fake()->firstName().' '.fake()->lastName(), 
+            'producer' => fake()->firstName().' '.fake()->lastName(), 
+            'budget' => fake()->numberBetween(), 
+            'fees' => fake()->numberBetween(), 
+            'ageLimit' => fake()->numberBetween(0, 18), 
+            'duration' => fake()->time('H:i', '24:00'), 
+            'description' => fake()->text(), 
+            'expertRating' => fake()->randomFloat(2, 0, 9), 
+            'rating' => fake()->randomFloat(2, 0, 9),
+            'expertMarksCount' => fake()->numberBetween(),
+            'marksCount' => fake()->numberBetween()
         ];
     }
 }

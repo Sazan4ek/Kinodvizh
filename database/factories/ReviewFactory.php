@@ -17,7 +17,11 @@ class ReviewFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'rating' => fake()->randomFloat(2, 0, 9),
+            'reviewable_type', 
+            'reviewable_id', 
+            'text', 
+            'user_id'
         ];
     }
 }
