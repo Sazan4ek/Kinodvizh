@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Film;
+use App\Models\Review;
+use App\Models\Series;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,10 +21,26 @@ class ReviewFactory extends Factory
     {
         return [
             'rating' => fake()->randomFloat(2, 0, 9),
-            'reviewable_type', 
-            'reviewable_id', 
-            'text', 
-            'user_id'
+            'text' => fake()->text(), 
+            'likesCount' => fake()->numberBetween(0,10000),
+            'dislikesCount' => fake()->numberBetween(0, 10000),
         ];
+        
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function(Review $review) {
+            if(rand() % 2)
+            {
+                $film = Film::all()->random();
+                $film->reviews()->save($review);
+            }
+            else 
+            {
+                $series = Series::all()->random();
+                $series->reviews()->save($review);
+            }
+        });
     }
 }

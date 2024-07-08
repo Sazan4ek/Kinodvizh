@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('director');
-            $table->year('productionYear');
+            $table->string('country');
             $table->date('releaseDate');
             $table->string('scenarioMaker');
             $table->string('producer');

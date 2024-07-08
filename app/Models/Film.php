@@ -13,8 +13,9 @@ class Film extends Model
 
     protected $fillable = [
         'id',
+        'name',
+        'country',
         'director',
-        'productionYear',
         'releaseDate', 
         'scenarioMaker', 
         'producer', 
@@ -51,6 +52,6 @@ class Film extends Model
 
     public function reviews(): MorphMany
     {
-        return $this->morphMany(Review::class, "reviewable");
+        return $this->morphMany(Review::class, 'reviewable');
     }
 }

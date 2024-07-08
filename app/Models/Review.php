@@ -17,6 +17,8 @@ class Review extends Model
         'reviewable_type', 
         'reviewable_id', 
         'text', 
+        'likesCount',
+        'dislikesCount',
         'user_id'
     ];
 

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('storages', function (Blueprint $table) {
             $table->id();
-            $table->morphs('storable');
+            $table->nullableMorphs('storable');
             $table->string('type', 45);
             $table->string('uri', 300);
             $table->timestamps();

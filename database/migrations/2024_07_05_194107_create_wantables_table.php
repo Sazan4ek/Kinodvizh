@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wanted_stuffs', function (Blueprint $table) {
+        Schema::create('wantables', function (Blueprint $table) {
             $table->id();
-            $table->morphs('wantable');
+            $table->nullableMorphs('wantable');
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('wanted_stuffs');
+        Schema::dropIfExists('wantables');
     }
 };

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('genreables', function (Blueprint $table) {
             $table->id();
-            $table->morphs('genreable');
+            $table->nullableMorphs('genreable');
             $table->foreignId('genre_id')->constrained('genres')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });

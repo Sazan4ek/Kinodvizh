@@ -16,8 +16,10 @@ class StorageFactory extends Factory
      */
     public function definition(): array
     {
+        $is_poster = rand() % 2;
         return [
-            //
+            'type' => $is_poster ? 'poster' : 'trailer', 
+            'uri' => $is_poster ? fake()->imageUrl() : fake()->imageUrl()
         ];
     }
 }

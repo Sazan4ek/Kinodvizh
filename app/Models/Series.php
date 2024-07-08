@@ -13,8 +13,9 @@ class Series extends Model
 
     protected $fillable = [
         'id', 
-        'director', 
-        'productionYear', 
+        'name',
+        'country',
+        'director',
         'releaseDate', 
         'scenarioMaker', 
         'producer', 
