@@ -5,7 +5,6 @@ function AdminLayout()
 {
     return (
         <div className="">
-            admin
             <Outlet/>
         </div>
     );

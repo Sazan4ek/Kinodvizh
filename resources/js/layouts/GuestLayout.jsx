@@ -4,7 +4,6 @@ function GuestLayout()
 {
     return (
         <div className="">
-            guest
             <Outlet/>
         </div>
     );

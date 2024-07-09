@@ -5,7 +5,6 @@ function DefaultLayout()
 {
     return (
         <div className="">
-            default
             <Outlet/>
         </div>
     );
