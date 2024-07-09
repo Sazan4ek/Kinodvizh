@@ -1,0 +1,35 @@
+.auth-container {
+    width: 50vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.title {
+    font-weight: bolder;
+    width: inherit;
+    display: flex;
+    justify-items: flex-start;
+}
+.auth {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 10px;
+    background-color: rgb(243, 243, 243);
+}
+.blue-btn {
+    border: none;
+    background-color: blue;
+    padding: 10px 20px;
+    color: azure;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 17px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all .7s;
+}
+.blue-btn:hover {
+    /* transform: translateY(-3px);
+    box-shadow: 3px 3px 5px 1px black; */
+    background-color: rgb(0, 0, 214);
+}

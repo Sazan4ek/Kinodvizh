@@ -1,0 +1,23 @@
+.header-container {
+    height: 10vh;
+    width: 100%;
+    background-color: rgb(28, 25, 25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.nav-bar {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 70px;
+}
+.nav-item {
+    text-decoration: none;
+    color: azure;
+    cursor: pointer;
+    font-size: 20px;
+    font-family: sans-serif;
+}
+.nav-item:hover {
+    color: rgba(240, 255, 255, 0.615);
+}
