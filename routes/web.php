@@ -16,6 +16,4 @@ use Illuminate\Support\Facades\Route;
 Route::get('/{pathMatch}', function(){
     return view('index');
 })->where('pathMatch', '.*');
-
-
-require __DIR__.'../auth.php';
+    

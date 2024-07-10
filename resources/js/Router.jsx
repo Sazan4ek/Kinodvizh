@@ -18,10 +18,14 @@ function Router()
             children: [
                 {
                     path: '',
+                    element: <Home/>
+                },
+                {
+                    path: '',
                     element: <DefaultLayout/>,
                     children: [
                         {
-                            path: '',
+                            path: 'films',
                             element: <Home/>
                         }
                     ]

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Stuff_Genres>
  */
-class StuffGenresFactory extends Factory
+class Factory extends Factory
 {
     /**
      * Define the model's default state.

@@ -4,16 +4,16 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import Router from './Router';
-import ContextProvider from './contexts/ContextProvider';
+import AuthContextProvider from './contexts/AuthContextProvider';
 
 function App()
 {
     return (
-        <ContextProvider>
-            <BrowserRouter>
+        <BrowserRouter>
+            <AuthContextProvider>
                 <Router />
-            </BrowserRouter>
-        </ContextProvider>
+            </AuthContextProvider>
+        </BrowserRouter>
     );
 }
 
