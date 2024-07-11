@@ -17,7 +17,7 @@ function Header()
                 {user ? (
                     <>
                         {user?.firstName}
-                        <button>Log out</button>
+                        <button onClick={logout}>Log out</button>
                     </>
                 ) : (
                     <>

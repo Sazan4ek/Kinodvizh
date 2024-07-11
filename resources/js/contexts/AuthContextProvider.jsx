@@ -9,18 +9,14 @@ function AuthContextProvider({children})
     const [user, setUser] = useState(null);
     const [errors, setErrors] = useState([])
     const navigate = useNavigate();
-    
-    const csrf = () => axiosClient.get('sanctum/csrf-cookie');
 
     const getUser = async () => {
-        await csrf();
         const {data} = await axiosClient.get('/user');
         setUser(data);
     }
 
     const register = async (payload) => {
         try {
-            await csrf();
             await axiosClient.post('/register', payload);
             await getUser();
             navigate('/');
@@ -36,7 +32,6 @@ function AuthContextProvider({children})
     const login = async (payload) => {
         
         try {
-            await csrf();
             await axiosClient.post('/login', payload);
             await getUser();
             navigate('/');
@@ -50,7 +45,6 @@ function AuthContextProvider({children})
     }
 
     const logout = async () => {
-        await csrf();
         axiosClient.post('/logout').then(() => {
             setUser(null)
         });
