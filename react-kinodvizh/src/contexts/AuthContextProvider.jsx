@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import axiosClient from "../axiosClient";
 import { useNavigate } from "react-router-dom";
 
@@ -49,6 +49,10 @@ function AuthContextProvider({children})
             setUser(null)
         });
     }
+
+    useEffect(() => {
+        if(!user) getUser();
+    },[]);
 
     return (
         <AuthContext.Provider value={{

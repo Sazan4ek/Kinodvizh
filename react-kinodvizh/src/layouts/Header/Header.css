@@ -1,11 +1,11 @@
 .header-container {
     height: 10vh;
-    width: 100%;
+    width: 100vw;
     background-color: rgb(28, 25, 25);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 300px;
+    padding: 0 150px;
 }
 .nav-bar {
     display: flex;
@@ -25,5 +25,18 @@
 .user-panel {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     gap: 20px;
+}
+.user-icon {
+    color: azure;
+    font-size: 30px;
+}
+.user-fullName {
+    text-decoration: none;
+    color: white;
+}
+.logo-container {
+    height: 50%;
+    width: fit-content;
 }
