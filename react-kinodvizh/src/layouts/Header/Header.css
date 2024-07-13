@@ -1,11 +1,14 @@
 .header-container {
     height: 10vh;
     width: 100vw;
+    max-width: 100vw;
     background-color: rgb(28, 25, 25);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 150px;
+    position: fixed;
+    z-index: 1;
 }
 .nav-bar {
     display: flex;

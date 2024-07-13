@@ -1,0 +1,60 @@
+.watchable-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    height: fit-content;
+    width: 50vw;
+    min-height: 150px;
+    gap: 10px;
+    border-radius: 15px;
+    border-bottom: solid rgb(243, 243, 243) 2px;
+    border-top: solid rgb(243, 243, 243) 2px;
+}
+.watchable-card:hover {
+    background-color: rgb(243, 243, 243);
+}
+.number-container {
+    padding: 20px 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: inherit;
+    height: inherit;
+    font-weight: bold;
+    font-size: 2.5vh;
+}
+.watchable-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 10px;
+}
+.watchable-info span {
+    font-size: 2vh;
+    color: rgb(115, 115, 115);
+}
+.film-name {
+    font-size: 3.5vh !important;
+    color: black !important;
+    font-weight: 500;
+}   
+.watchable-rating {
+    position: absolute;
+    top: 5%;
+    right: 15%;
+}
+.marksCount {
+    font-size: 2vh;
+    color: rgb(115, 115, 115);
+}
+.watchable-buttons {
+    position: absolute;
+    top: 10%;
+    right: 5%;
+    display: flex;
+    gap: 10px;
+}
+.watchable-btn {
+    font-size: 4vh;
+    cursor: pointer;
+}

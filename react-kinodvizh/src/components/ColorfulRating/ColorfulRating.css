@@ -1,0 +1,19 @@
+.awesome-color {
+    background: linear-gradient(to bottom, #cfc09f 14%,#634f2c 16%, #cfc09f 20%, #cfc09f 22%,#ffecb3 40%,#3a2c0f 84%); 
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.pretty-good-color {
+    color: rgb(0, 164, 0);
+}
+.not-good-color {
+    color: rgb(249, 216, 1);
+}
+.bad-color {
+    color: red;
+}
+.rating {
+    font-size: 3.5vh;
+    font-weight: bold;
+}

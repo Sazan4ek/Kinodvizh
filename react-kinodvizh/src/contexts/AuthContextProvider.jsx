@@ -7,12 +7,18 @@ export let AuthContext = createContext({});
 function AuthContextProvider({children})
 {
     const [user, setUser] = useState(null);
+    const [userRole, setUserRole] = useState(null);
     const [errors, setErrors] = useState([])
     const navigate = useNavigate();
 
     const getUser = async () => {
         const {data} = await axiosClient.get('/user');
         setUser(data);
+    }
+
+    const getUserRole = async () => {
+        const {data} = await axiosClient.get('user/role');
+        setUserRole(data);
     }
 
     const register = async (payload) => {
@@ -52,11 +58,13 @@ function AuthContextProvider({children})
 
     useEffect(() => {
         if(!user) getUser();
+        if(!userRole) getUserRole();
     },[]);
 
     return (
         <AuthContext.Provider value={{
             user, 
+            userRole,
             getUser,
             errors,
             register,

@@ -14,12 +14,14 @@ class StorageFactory extends Factory
      *
      * @return array<string, mixed>
      */
+    static protected $is_poster = true;
+    
     public function definition(): array
     {
-        $is_poster = rand() % 2;
+        self::$is_poster = !self::$is_poster;
         return [
-            'type' => $is_poster ? 'poster' : 'trailer', 
-            'uri' => $is_poster ? fake()->imageUrl() : fake()->imageUrl()
+            'type' => self::$is_poster ? 'poster' : 'trailer', 
+            'uri' => fake()->imageUrl()
         ];
     }
 }

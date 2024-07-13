@@ -1,0 +1,71 @@
+.sidebar {
+    height: 100%;
+    width: 22vw;
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    overflow-x: hidden;
+    padding-top: 20px;
+    margin-top: 10vh;
+    background-color: rgb(243, 243, 243);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 20px;
+    align-items: center;
+    gap: 15px;
+}
+.filter-panel {
+    height: inherit;
+    width: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+.slogan {
+    font-family: 'DM Serif Display';
+    font-size: 22px;
+    text-wrap: wrap;
+}
+.watchable-type-switch {
+    display: flex;
+    justify-content: space-between;
+    width: 60%;
+}
+.watchable-type-btn {
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 2.5vh;
+    font-weight: 700;
+    background-color: #fff;
+    border: 2px solid black;
+    transition: ease-in-out 0.5s;
+}
+.active-btn {
+    background-color: black;
+    color: azure;
+    -moz-box-shadow: 0 0 20px white;
+    -webkit-box-shadow: 0 0 20px white;
+    box-shadow: 2px 2px 5px black;
+}
+.countries-dropdown-container {
+    font-size: 20px
+}
+.years-range-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.year-range {
+    align-self: center  ;
+}
+.rating-range-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

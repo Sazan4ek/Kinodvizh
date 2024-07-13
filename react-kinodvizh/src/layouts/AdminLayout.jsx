@@ -1,13 +1,13 @@
-import { Outlet } from "react-router-dom";
+import { useContext } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContextProvider";
 
 
 function AdminLayout()
 {
-    return (
-        <div className="">
-            <Outlet/>
-        </div>
-    );
+    const { userRole } = useContext(AuthContext);
+
+    return userRole === 'admin' ? <Outlet/> : <Navigate to={'/'}/>;
 }
 
 export default AdminLayout;

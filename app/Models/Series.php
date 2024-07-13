@@ -54,4 +54,47 @@ class Series extends Model
     {
         return $this->morphMany(Review::class, "reviewable");
     }
+
+    static public function getFilteredData($filterData)
+    {
+        $genre = $filterData->genre ?? null;
+
+        $sqlQuery = Series::query()->with('materials')->with('genres');
+        
+        // ->with(['genres', function($query) use ($genre) {
+        //     $query->where('name', $genre);
+        // }]);
+
+        $country = $filterData->country ?? null;
+        if($country) $sqlQuery->where('country', $country);
+
+        $yearFrom = $filterData->yearFrom ?? null;
+        $yearUntil = $filterData->yearUntil ?? null;
+        $dateFrom = "$yearFrom-01-01";    
+        $dateUntil = "$yearUntil-12-31"; 
+        if($yearFrom && $yearUntil) $sqlQuery->whereBetween('releaseDate', [$dateFrom, $dateUntil]); 
+        else if($yearFrom) $sqlQuery->where('releaseDate', '>=', $dateFrom);
+        else if($yearUntil) $sqlQuery->where('releaseDate', '<=', $dateUntil);
+
+        $rateFrom = $filterData->rateFrom ?? 0;
+        $rateUntil = $filterData->rateUntil ?? 10;
+        $sqlQuery->whereBetween('rating', [$rateFrom, $rateUntil]);
+
+        $searchText = $filterData->searchText;
+        if($searchText !== "") $sqlQuery->where('name', 'like', "%$searchText%");
+
+        $orderBy = $filterData->orderBy;
+        if($orderBy === 'by marks count') $sqlQuery->orderBy('marksCount', 'desc');
+        else if($orderBy === 'by rating') $sqlQuery->orderBy('rating', 'desc');
+        else if($orderBy === 'by release date') $sqlQuery->orderBy('releaseDate', 'desc');
+        else if($orderBy === 'by name') $sqlQuery->orderBy('name', 'asc');
+
+        $filteredSeries = $sqlQuery->paginate(20);
+        return $filteredSeries;
+    }
+
+    static public function getAllCountries()
+    {
+        return Series::all()->pluck('country')->unique();
+    }
 }

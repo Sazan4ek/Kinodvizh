@@ -26,7 +26,7 @@ function Router()
                     children: [
                         {
                             path: 'films',
-                            element: <Home/>
+                            element: <></>
                         }
                     ]
                 },
