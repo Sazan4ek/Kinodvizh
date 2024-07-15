@@ -37,4 +37,9 @@ class SeriesController extends Controller
     {
         return Series::getAllCountries();
     }
+
+    public function getSeriesWith(Request $request, $seriesId)
+    {
+        return Series::with($request->with)->find($seriesId);
+    }
 }

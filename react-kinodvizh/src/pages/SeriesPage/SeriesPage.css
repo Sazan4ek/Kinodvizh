@@ -1,0 +1,59 @@
+.poster-container {
+    cursor: pointer;
+}
+.series-container {
+    width: 80vw;
+    height: fit-content;
+    display: flex;
+    gap: 40px;
+    border-bottom: lightgrey 1px solid;
+}
+.left-side {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding-top: 20px;
+}
+.middle-watchable-buttons {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+.series-h1 {
+    font-size: 8vh;
+    font-weight: bold;
+}
+.middle-watchable-btn {
+    font-size: 5vh;
+    cursor: pointer;
+}
+.middle-side {
+    min-width: 40%;
+    max-width: 50%;
+}
+.series-about-container {
+    margin-top: 30px;
+}
+.table {
+	width: 100%;
+	border: none;
+	margin-bottom: 20px;
+}
+th {
+	padding: 10px;
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 20px;
+	text-align: left;
+	color: #444441;
+}
+td {
+	padding: 10px;
+	font-size: 14px;
+	line-height: 20px;
+	color: #444441;
+}
+.right-side {
+    display: flex;
+    flex-direction: column;
+}

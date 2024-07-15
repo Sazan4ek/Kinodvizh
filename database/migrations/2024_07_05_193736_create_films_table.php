@@ -19,15 +19,17 @@ return new class extends Migration
             $table->date('releaseDate');
             $table->string('scenarioMaker');
             $table->string('producer');
-            $table->unsignedBigInteger('budget');
-            $table->unsignedBigInteger('fees');
-            $table->unsignedTinyInteger('agelimit');
+            $table->unsignedBigInteger('budget')->nullable();
+            $table->unsignedBigInteger('fees')->nullable();
+            $table->unsignedTinyInteger('ageLimit')->nullable();
             $table->time('duration');
-            $table->text('description');
-            $table->unsignedDecimal('expertRating', 3, 1);
-            $table->unsignedDecimal('rating', 3, 1);
-            $table->unsignedBigInteger('expertMarksCount');
-            $table->unsignedBigInteger('marksCount');
+            $table->text('description')->nullable();
+            $table->unsignedDecimal('expertRating', 3, 1)->nullable();
+            $table->unsignedDecimal('rating', 3, 1)->nullable();
+            $table->unsignedBigInteger('marksSum')->default(0);
+            $table->unsignedBigInteger('expertMarksCount')->default(0);
+            $table->unsignedBigInteger('expertMarksSum')->default(0);
+            $table->unsignedBigInteger('marksCount')->nullable();
             $table->timestamps();
         });
     }

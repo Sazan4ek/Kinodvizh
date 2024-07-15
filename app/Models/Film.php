@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
-use function Laravel\Prompts\search;
-
 class Film extends Model
 {
     use HasFactory;
@@ -28,6 +26,8 @@ class Film extends Model
         'description', 
         'expertRating', 
         'rating',
+        'marksSum',
+        'expertMarksSum',
         'expertMarksCount',
         'marksCount'
     ];
@@ -59,14 +59,14 @@ class Film extends Model
 
     static public function getFilteredData($filterData)
     {
-        $genre = $filterData->genre ?? null;
-
         $sqlQuery = Film::query()->with('materials', function ($query) {
             $query->where('type', 'poster');
         })->with(['genres', 'usersWhoWatched', 'usersWhoWantedToWatch']);
-        // , function ($query) use ($genres){
-        //     $query->whereIn('name', [$genres]);
-        // });
+        
+        $genre = $filterData->genre ?? null;
+        if($genre) $sqlQuery->whereHas('genres', function ($query) use ($genre) {
+            $query->where('name', $genre);
+        });
 
         $country = $filterData->country ?? null;
         if($country) $sqlQuery->where('country', $country);

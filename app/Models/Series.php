@@ -26,6 +26,8 @@ class Series extends Model
         'seriesDuration', 
         'expertRating', 
         'rating',
+        'marksSum',
+        'expertMarksSum',
         'expertMarksCount',
         'marksCount'
     ];
@@ -57,13 +59,14 @@ class Series extends Model
 
     static public function getFilteredData($filterData)
     {
-        $genre = $filterData->genre ?? null;
-
-        $sqlQuery = Series::query()->with('materials')->with('genres');
+        $sqlQuery = Series::query()->with('materials', function ($query) {
+            $query->where('type', 'poster');
+        })->with(['genres', 'usersWhoWatched', 'usersWhoWantedToWatch']);
         
-        // ->with(['genres', function($query) use ($genre) {
-        //     $query->where('name', $genre);
-        // }]);
+        $genre = $filterData->genre ?? null;
+        if($genre) $sqlQuery->whereHas('genres', function ($query) use ($genre) {
+            $query->where('name', $genre);
+        });
 
         $country = $filterData->country ?? null;
         if($country) $sqlQuery->where('country', $country);

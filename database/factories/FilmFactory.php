@@ -28,10 +28,12 @@ class FilmFactory extends Factory
             'ageLimit' => fake()->numberBetween(0, 18), 
             'duration' => fake()->time('H:i:s', '5:00:00'), 
             'description' => fake()->text(), 
-            'expertRating' => fake()->randomFloat(2, 0, 9), 
-            'rating' => fake()->randomFloat(2, 0, 9),
-            'expertMarksCount' => fake()->numberBetween(0, 500000),
-            'marksCount' => fake()->numberBetween()
+            'expertMarksCount' => $expertMarksCount = fake()->numberBetween(0, 10000),
+            'marksCount' => $marksCount = fake()->numberBetween(0, 10000),
+            'marksSum' => $marksSum = fake()->numberBetween(0, 100000),
+            'expertMarksSum' => $expertMarksSum = fake()->numberBetween(0, 100000),
+            'expertRating' => (round($expertMarksSum / $expertMarksCount, 1) > 10 ? 6.9 : round($expertMarksSum / $expertMarksCount, 1)), 
+            'rating' => (round($marksSum / $marksCount, 1) > 10 ? 6.9 : round($marksSum / $marksCount, 1))
         ];
     }
 }

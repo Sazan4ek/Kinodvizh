@@ -37,4 +37,9 @@ class FilmController extends Controller
     {
         return Film::getAllCountries();
     }
+
+    public function getFilmsWith(Request $request, $filmId)
+    {
+        return Film::with($request->with)->find($filmId);
+    }
 }

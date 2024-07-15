@@ -7,12 +7,15 @@ import { IoBookmark } from "react-icons/io5";
 import { useContext, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthContextProvider';
 import axiosClient from '../../axiosClient';
+import { useNavigate } from 'react-router-dom';
 
 function SeriesCard({series, number})
 {
     const genres = series.genres;
     const posterUrl = series?.materials[0]?.uri;
     const releaseYear = series.releaseDate.split('-')[0];
+
+    const navigate = useNavigate();
 
     const { user } = useContext(AuthContext);
 
@@ -48,9 +51,9 @@ function SeriesCard({series, number})
                 <span className='watchable-number'>{number}</span>
             </div>
             <div className="poster-container">
-                <img src={posterUrl} alt="Series-poster" height={'120'}/>
+                <img src={posterUrl} alt="Series-poster" height={'120'} onClick={() => navigate(`/series/${series?.id}`)}/>
             </div>
-            <div className="watchable-info">
+            <div className="watchable-info" onClick={() => navigate(`/series/${series?.id}`)}>
                 <span className="series-name">{series.name}</span>
                 <span>{releaseYear}, seasons count: {series.seasonsCount}</span>
                 <span>Country: {series.country}</span>
@@ -69,10 +72,24 @@ function SeriesCard({series, number})
                 <span className='marksCount'>{series.marksCount} marks</span>
             </div>
             <div className="watchable-buttons">
-                { IsWantedToWatch ? <abbr title='I want to watch'><IoBookmark onClick={() => toggleUserWhoWantedToWatch('detach')} className='watchable-btn'/></abbr> 
-                : <abbr title="I do not want to watch"><CiBookmark onClick={() => toggleUserWhoWantedToWatch('attach')} className='watchable-btn'/></abbr>}
-                { IsWatched ? <abbr title="I watched"><IoEye onClick={() => toggleUserWhoWatched('detach')} className='watchable-btn'/></abbr>
-                : <abbr title="not watched"><MdOutlineRemoveRedEye onClick={() => toggleUserWhoWatched('attach')} className='watchable-btn'/></abbr>}
+            { IsWantedToWatch ? (
+                    <abbr title='I want to watch'>
+                        <IoBookmark fill={'#ce9d07'} onClick={() => toggleUserWhoWantedToWatch('detach')} className='watchable-btn'/>
+                    </abbr> 
+                ) : (
+                    <abbr title="I do not want to watch">
+                        <CiBookmark onClick={() => toggleUserWhoWantedToWatch('attach')} className='watchable-btn'/>
+                    </abbr>
+                )}
+                { IsWatched ? (
+                    <abbr title="I watched">
+                        <IoEye onClick={() => toggleUserWhoWatched('detach')} className='watchable-btn'/>
+                    </abbr>
+                ) : (
+                    <abbr title="not watched">
+                        <MdOutlineRemoveRedEye onClick={() => toggleUserWhoWatched('attach')} className='watchable-btn'/>
+                    </abbr>
+                )}
             </div>
         </div>
     );

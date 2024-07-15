@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
             $table->nullableMorphs('reviewable');
-            $table->unsignedDecimal('rating');
+            $table->unsignedInteger('rating');
             $table->text('text');
-            $table->unsignedBigInteger('likesCount');
-            $table->unsignedBigInteger('dislikesCount');
+            $table->unsignedBigInteger('likesCount')->default(0);
+            $table->unsignedBigInteger('dislikesCount')->default(0);
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });

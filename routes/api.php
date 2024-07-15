@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\FilmController;
 use App\Http\Controllers\GenreController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SeriesController;
 use App\Http\Controllers\UserRoleController;
 use Illuminate\Http\Request;
@@ -77,3 +78,16 @@ Route::get('/films/countries', [FilmController::class, 'allCountries']);
 Route::get('/series/countries', [SeriesController::class, 'allCountries']);
 
 Route::get('/genres', [GenreController::class, 'index']);
+
+Route::post('/film/{filmId}', [FilmController::class, 'getFilmsWith']);
+
+Route::post('/series/{seriesId}', [SeriesController::class, 'getSeriesWith']);
+
+Route::patch('review/{reviewId}/toggleLike', [ReviewController::class, 'toggleLike'])
+    ->middleware('auth');
+
+Route::patch('review/{reviewId}/toggleDislike', [ReviewController::class, 'toggleDislike'])
+    ->middleware('auth');
+
+Route::post('/reviews/create', [ReviewController::class, 'store'])
+    ->middleware('auth');

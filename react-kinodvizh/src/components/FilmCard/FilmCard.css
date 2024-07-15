@@ -23,11 +23,15 @@
     font-weight: bold;
     font-size: 2.5vh;
 }
+.poster-container {
+    cursor: pointer;
+}
 .watchable-info {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     margin-left: 10px;
+    cursor: pointer;
 }
 .watchable-info span {
     font-size: 2vh;

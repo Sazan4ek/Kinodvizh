@@ -20,7 +20,7 @@ class ReviewFactory extends Factory
     public function definition(): array
     {
         return [
-            'rating' => fake()->randomFloat(2, 0, 9),
+            'rating' => fake()->numberBetween(0, 10),
             'text' => fake()->text(), 
             'likesCount' => fake()->numberBetween(0,10000),
             'dislikesCount' => fake()->numberBetween(0, 10000),

@@ -7,12 +7,15 @@ import { IoBookmark } from "react-icons/io5";
 import { useContext, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthContextProvider';
 import axiosClient from '../../axiosClient';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 function FilmCard({film, number})
 {
     const genres = film.genres;
     const posterUrl = film?.materials[0]?.uri;
     const releaseYear = film.releaseDate.split('-')[0];
+
+    const navigate = useNavigate();
 
     const { user } = useContext(AuthContext);
 
@@ -47,10 +50,10 @@ function FilmCard({film, number})
             <div className="number-container">
                 <span className='watchable-number'>{number}</span>
             </div>
-            <div className="poster-container">
+            <div className="poster-container" onClick={() => navigate(`/film/${film?.id}`)}>
                 <img src={posterUrl} alt="film-poster" height={'120'}/>
             </div>
-            <div className="watchable-info">
+            <div className="watchable-info" onClick={() => navigate(`/film/${film?.id}`)}>
                 <span className="film-name">{film.name}</span>
                 <span>{releaseYear}, {film.duration}</span>
                 <span>Country: {film.country}</span>

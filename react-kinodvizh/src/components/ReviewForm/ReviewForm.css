@@ -1,0 +1,27 @@
+.review-container {
+    display: flex;
+    gap: 30px;
+    margin-top: 30px;
+}
+.rate-container {
+    height: fit-content;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.film-rating {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+.review-making-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.review-btn {
+    width: fit-content;
+    align-self: center;
+}

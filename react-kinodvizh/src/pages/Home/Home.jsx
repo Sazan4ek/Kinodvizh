@@ -8,13 +8,16 @@ import { DownOutlined } from '@ant-design/icons';
 import { Dropdown, Space, Typography } from 'antd';
 import SideBar from '../../components/SideBar/SideBar';
 import Pagination from '../../components/Pagination/Pagination';
+import useQuery from '../../hooks/useQuery';
 const { Search } = Input;
 
 function Home()
 {
+    let query = useQuery();
+    const defaultWatchableType = query.get("watchable") ?? null;
     const [watchables, setWatchables] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [watchableType, setWatchableType] = useState('films');
+    const [watchableType, setWatchableType] = useState(defaultWatchableType ? defaultWatchableType : 'films');
     const [country, setCountry] = useState(null);
     const [yearFrom, setYearFrom] = useState(null);
     const [yearUntil, setYearUntil] = useState(null);
@@ -24,7 +27,7 @@ function Home()
     const [genre, setGenre] = useState(null);
     const [orderBy, setOrderBy] = useState('in order');
 
-    const getWatchables = (watchableType, searchText) => {
+    const getWatchables = (watchableType, url) => {
         setLoading(true);
         const payload = {
             country, 
@@ -37,7 +40,9 @@ function Home()
             orderBy
         }
 
-        axiosClient.post(`/${watchableType}`, payload).then(({data}) => {
+        if(!url) url = `/${watchableType}`;
+
+        axiosClient.post(url, payload).then(({data}) => {
             setLoading(false);
             setWatchables(data);
         })
@@ -79,40 +84,40 @@ function Home()
             <SideBar props={{
                 watchableType, 
                 setWatchableType,
-                country,
                 setCountry, 
-                genre,
                 setGenre,
-                rateFrom,
                 setRateFrom, 
-                rateUntil, 
-                setRateUntil, 
-                yearFrom, 
+                setRateUntil,  
                 setYearFrom, 
-                yearUntil, 
                 setYearUntil
             }}/>
             <ConfigProvider
                 theme={{
                     token: {
-                    colorPrimary: '#ffc107',
+                        colorPrimary: '#ffc107',
                     },
                 }}
             >
                 <Search
                     placeholder="input search text"
-                    // allowClear
                     enterButton="Search"
                     size="large"
                     onChange={(event) => setSearchText(event.target.value)}
                     value={searchText}
-                    onSearch={() => {getWatchables(watchableType, searchText);}}
+                    onSearch={() => {getWatchables(watchableType);}}
                     style={{
                         width: '25vw',
                     }}
                 />
             </ConfigProvider>
             <div className="sort-dropdown">
+            <ConfigProvider
+                theme={{
+                    token: {
+                        colorPrimary: '#ffc107',
+                    },
+                }}
+            >
                 <Dropdown
                     menu={{
                         items,
@@ -128,13 +133,14 @@ function Home()
                         </Space>
                     </Typography.Link>
                 </Dropdown>
+            </ConfigProvider>
                 {/* <SelectableDropdown options={items} title={"Sort by:"}/> */}
             </div>
             {loading && (<span className='mt-5'>Loading...</span>)}
             {!loading && (
                 <>
                     <WatchablesList watchables={watchables} type={watchableType}/>
-                    <Pagination links={watchables.links}/>
+                    <Pagination links={watchables.links} getWatchables={getWatchables}/>
                 </>
             )}
         </>

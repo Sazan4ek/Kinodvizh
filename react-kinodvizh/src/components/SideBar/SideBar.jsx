@@ -9,17 +9,11 @@ function SideBar({props})
     const {
         watchableType, 
         setWatchableType,
-        // country,
         setCountry, 
-        // genre,
         setGenre,
-        // rateFrom,
         setRateFrom, 
-        // rateUntil, 
-        setRateUntil, 
-        // yearFrom, 
+        setRateUntil,  
         setYearFrom, 
-        // yearUntil, 
         setYearUntil
     } = {...props};
     const [countriesList, setCountriesList] = useState([]);
@@ -60,6 +54,7 @@ function SideBar({props})
                     <span className='country'>Country: </span>
                 <Select
                     showSearch
+                    allowClear
                     placeholder="Select the country"
                     optionFilterProp="label"
                     onChange={(country) => setCountry(country)}
@@ -79,6 +74,7 @@ function SideBar({props})
                     <span className='genre'>Genre: </span>
                     <Select
                         showSearch
+                        allowClear
                         placeholder="Select the genre"
                         optionFilterProp="label"
                         onChange={(genre) => setGenre(genre)}

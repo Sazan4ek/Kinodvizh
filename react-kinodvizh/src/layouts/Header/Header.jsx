@@ -15,8 +15,8 @@ function Header()
             </div>
             <nav className="nav-bar">
                 <NavLink className="nav-item" to={'/'}>Home</NavLink>
-                <NavLink className="nav-item" to={'/films'}>Films</NavLink>
-                <NavLink className="nav-item" to={'/series'}>Series</NavLink>
+                <NavLink className="nav-item" to={'/?watchable=films'}>Films</NavLink>
+                <NavLink className="nav-item" to={'/?watchable=series'}>Series</NavLink>
             </nav>
             <div className="user-panel">
                 {user ? (
