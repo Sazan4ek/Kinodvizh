@@ -22,7 +22,19 @@ class SeriesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string'],
+            'country' => ['required', 'string'],
+            'director' => ['required', 'string'],
+            'releaseDate' => ['required', 'date'], 
+            'scenarioMaker' => ['required', 'string'], 
+            'producer' => ['required', 'string'], 
+            'budget' => ['nullable', 'integer'], 
+            'fees' => ['nullable', 'integer'], 
+            'ageLimit' => ['nullable', 'integer'], 
+            'seriesDuration' => ['required', 'date_format:H:i:s'], 
+            'seasonsCount' => ['required', 'integer'],
+            'description' => ['nullable', 'string'], 
+            'genresId' => ['required', 'array']
         ];
     }
 }

@@ -11,6 +11,5 @@ class UserRoleController extends Controller
     {
         $role = Role::find($request->role_id);
         return $role;
-        // ->value('name')
     }
 }

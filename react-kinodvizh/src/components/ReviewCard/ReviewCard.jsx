@@ -32,7 +32,7 @@ function ReviewCard({review})
         const payload = {
             action: action
         }
-        axiosClient.patch(`/review/${review?.id}/toggleLike`, payload)
+        axiosClient.patch(`/reviews/${review?.id}/toggleLike`, payload)
             .then(({data}) => {
                 if(action === 'add') setIsLiked(true);
                 else setIsLiked(false);
@@ -44,7 +44,7 @@ function ReviewCard({review})
         const payload = {
             action: action
         }
-        await axiosClient.patch(`/review/${review?.id}/toggleDislike`, payload)
+        await axiosClient.patch(`/reviews/${review?.id}/toggleDislike`, payload)
             .then(({data}) => {
                 if(action === 'add') setIsDisliked(true);
                 else setIsDisliked(false);
@@ -55,7 +55,7 @@ function ReviewCard({review})
     return (
         <div className="review-card">
             <div className="up-row">
-                <Link to={`/user/${writer?.id}/profile`} className="d-flex gap-2 without-underline">
+                <Link to={`/users/${writer?.id}/profile`} className="d-flex gap-2 without-underline">
                     <LuUser2 className="writer-icon"/>
                     <span className="writer-fullName">
                         {writer?.first_name + ' '}

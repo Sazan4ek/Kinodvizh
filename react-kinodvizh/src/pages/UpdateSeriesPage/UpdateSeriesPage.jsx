@@ -47,7 +47,6 @@ function UpdateSeriesPage()
         await axiosClient.patch(`admin/series/${seriesId}`, payload)
             .then(() => navigate(-1))
             .catch(errors => {
-                console.log(errors);
                 if(errors.response.status === 422)
                 {
                     setErrors(errors.response.data.errors);
@@ -82,6 +81,7 @@ function UpdateSeriesPage()
                 {
                     setErrors(errors.response.data.errors);
                 }
+                window.scrollTo(0,0);
             });
 
             axiosClient.get(`/genres`).then(({data}) => {

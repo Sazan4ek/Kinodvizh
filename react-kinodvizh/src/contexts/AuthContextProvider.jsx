@@ -23,7 +23,7 @@ function AuthContextProvider({children})
             localStorage.setItem('IS_LOGGED_IN', 'true');
             await axiosClient.post('/register', payload);
             await getUser();
-            navigate('/');
+            navigate(-1);
         }   
         catch(error) {
             localStorage.removeItem('IS_LOGGED_IN');
@@ -40,7 +40,7 @@ function AuthContextProvider({children})
             localStorage.setItem('IS_LOGGED_IN', 'true');
             await axiosClient.post('/login', payload);
             await getUser();
-            navigate('/');
+            navigate(-1);
         }
         catch(error) {
             localStorage.removeItem('IS_LOGGED_IN');

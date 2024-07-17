@@ -45,11 +45,11 @@ function UpdateFilmPage()
         await axiosClient.patch(`admin/films/${filmId}`, payload)
             .then(() => navigate(-1))
             .catch(errors => {
-                console.log(errors);
                 if(errors.response.status === 422)
                 {
                     setErrors(errors.response.data.errors);
                 }
+                window.scrollTo(0,0);
             });
     }
 
@@ -59,7 +59,7 @@ function UpdateFilmPage()
                 'genres'
             ]
         }
-        axiosClient.post(`film/${filmId}`, payload)
+        axiosClient.post(`films/${filmId}`, payload)
             .then(({data}) => {
                 setGenresId(data?.genres.map((genre) => genre.id));
                 setName(data?.name);
@@ -89,7 +89,6 @@ function UpdateFilmPage()
 
     return(
         <>
-        {console.log(genresId)}
             <div className="form-container">
                 <h1 className='title'>Update film info</h1>
                 <form className="update-form">

@@ -26,8 +26,8 @@ function FilmPage()
 
     const { user, userRole } = useContext(AuthContext);
 
-    const [IsWantedToWatch, setIsWantedToWatch] = useState(film?.users_who_wanted_to_watch?.some((elem)=> elem.id === user?.id));
-    const [IsWatched, setIsWatched] = useState(film?.users_who_watched?.some((elem)=> elem.id === user?.id));
+    const [IsWantedToWatch, setIsWantedToWatch] = useState(false);
+    const [IsWatched, setIsWatched] = useState(false);
 
     const deleteFilm = async (filmId) => {
         await axiosClient.delete(`admin/films/${filmId}`)
@@ -41,7 +41,7 @@ function FilmPage()
             user_id: user.id,
             func
         }
-        axiosClient.post('film/toggleUserWhoWantedToWatch', payload)
+        axiosClient.post('films/toggleUserWhoWantedToWatch', payload)
         .then(() => { setIsWantedToWatch(!IsWantedToWatch); })
         .catch(error => console.log(error));
     }
@@ -52,7 +52,7 @@ function FilmPage()
             user_id: user.id,
             func
         }
-        axiosClient.post('film/toggleUserWhoWatched', payload)
+        axiosClient.post('films/toggleUserWhoWatched', payload)
         .then(() => { setIsWatched(!IsWatched); })
         .catch(error => console.log(error));
     }
@@ -68,23 +68,24 @@ function FilmPage()
                 'genres'
             ]
         }
-        await axiosClient.post(`film/${filmId}`, payload)
+        await axiosClient.post(`films/${filmId}`, payload)
             .then(({data}) => {
                 setLoading(false); 
                 setFilm(data); 
                 setMarksCount(data.marksCount);
                 setRating(data.rating); 
                 setReviews(data.reviews);
+                setIsWantedToWatch(data?.users_who_wanted_to_watch?.some((elem)=> elem.id === user?.id));
+                setIsWatched(data?.users_who_watched?.some((elem)=> elem.id === user?.id));
             })
             .catch(error => {console.log(error); setLoading(false);});
     }
 
     useEffect(() => {
-        getFilm(filmId)
+        getFilm(filmId);
     }, [])
 
     if(loading) return <span className='mt-5'>Loading...</span>;
-    else 
 
     return (
         <>
@@ -104,7 +105,7 @@ function FilmPage()
                         {film?.name}
                     </h1>
                     <div className="middle-watchable-buttons">
-                        { IsWantedToWatch ? (
+                        { user && IsWantedToWatch ? (
                             <abbr title='I want to watch'>
                                 <IoBookmark fill={'#ce9d07'} onClick={() => toggleUserWhoWantedToWatch('detach')} className='middle-watchable-btn'/>
                             </abbr> 
@@ -113,7 +114,7 @@ function FilmPage()
                                 <CiBookmark onClick={() => toggleUserWhoWantedToWatch('attach')} className='middle-watchable-btn'/>
                             </abbr>
                         )}
-                        { IsWatched ? (
+                        { user && IsWatched ? (
                             <abbr title="I watched">
                                 <IoEye onClick={() => toggleUserWhoWatched('detach')} className='middle-watchable-btn'/>
                             </abbr>
@@ -124,7 +125,7 @@ function FilmPage()
                         )}
                         {userRole === 'admin' && (
                             <>
-                                <button onClick={() => navigate(`/admin/film/${film?.id}/edit`)} className='btn btn-success'>Change info</button>
+                                <button onClick={() => navigate(`/admin/films/${film?.id}/edit`)} className='btn btn-success'>Change info</button>
                                 <button onClick={() => deleteFilm(film?.id)} className='btn btn-danger'>Delete</button>
                             </>
                         )}

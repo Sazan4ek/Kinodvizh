@@ -1,5 +1,5 @@
 .awesome-color {
-    background: linear-gradient(to bottom, #cfc09f 14%,#634f2c 16%, #cfc09f 20%, #cfc09f 22%,#ffecb3 40%,#3a2c0f 84%); 
+    background: linear-gradient(to bottom, #cfc09f 14%,#634f2c 16%,  20%, #cfc09f 22%,#ffecb3 40%,#3a2c0f 84%); 
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -16,4 +16,5 @@
 .rating {
     font-size: 3.5vh;
     font-weight: bold;
+    position: relative;
 }

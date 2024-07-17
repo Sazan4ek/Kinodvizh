@@ -11,15 +11,16 @@
   align-items: center;
   width: 100%;
   min-height: 100vh;
+  position: relative;
 }
 .main-container {
   padding-top: 14vh;
+  padding-bottom: 14vh;
   width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-bottom: 20px;
 }
 .without-underline {
   text-decoration: none;

@@ -84,7 +84,6 @@ function SeriesPage()
     }, [])
 
     if(loading) return <span className='mt-5'>Loading...</span>;
-    else 
 
     return (
         <>
@@ -93,8 +92,9 @@ function SeriesPage()
                     <div className="poster-container">
                         <img src={posterUrl} alt="series-poster" width={'300'}/>
                     </div>
-                    <div className="trailer-container">
-                    <img src={trailerUrl} alt="series-trailer" width={300}/>
+                    <div className="d-flex flex-column gap-2 trailer-container">
+                        <h1>Trailer:</h1>
+                        <video controls src={trailerUrl} alt="film-trailer" width={300}></video>
                     </div>
                         
                 </div>
@@ -103,7 +103,7 @@ function SeriesPage()
                         {series?.name}
                     </h1>
                     <div className="middle-watchable-buttons">
-                        { IsWantedToWatch ? (
+                        { user && IsWantedToWatch ? (
                             <abbr title='I want to watch'>
                                 <IoBookmark fill={'#ce9d07'} onClick={() => toggleUserWhoWantedToWatch('detach')} className='middle-watchable-btn'/>
                             </abbr> 
@@ -112,7 +112,7 @@ function SeriesPage()
                                 <CiBookmark onClick={() => toggleUserWhoWantedToWatch('attach')} className='middle-watchable-btn'/>
                             </abbr>
                         )}
-                        { IsWatched ? (
+                        { user && IsWatched ? (
                             <abbr title="I watched">
                                 <IoEye onClick={() => toggleUserWhoWatched('detach')} className='middle-watchable-btn'/>
                             </abbr>

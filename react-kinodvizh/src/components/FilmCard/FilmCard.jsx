@@ -35,7 +35,7 @@ function FilmCard({film, number})
             user_id: user.id,
             func
         }
-        axiosClient.post('film/toggleUserWhoWantedToWatch', payload)
+        axiosClient.post('films/toggleUserWhoWantedToWatch', payload)
         .then(() => { setIsWantedToWatch(!IsWantedToWatch); })
         .catch(error => console.log(error));
     }
@@ -46,7 +46,7 @@ function FilmCard({film, number})
             user_id: user.id,
             func
         }
-        axiosClient.post('film/toggleUserWhoWatched', payload)
+        axiosClient.post('films/toggleUserWhoWatched', payload)
         .then(() => { setIsWatched(!IsWatched); })
         .catch(error => console.log(error));
     }
@@ -58,10 +58,10 @@ function FilmCard({film, number})
             <div className="number-container">
                 <span className='watchable-number'>{number}</span>
             </div>
-            <div className="poster-container" onClick={() => navigate(`/film/${film?.id}`)}>
+            <div className="poster-container" onClick={() => navigate(`/films/${film?.id}`)}>
                 <img src={posterUrl} alt="film-poster" height={'120'}/>
             </div>
-            <div className="watchable-info" onClick={() => navigate(`/film/${film?.id}`)}>
+            <div className="watchable-info" onClick={() => navigate(`/films/${film?.id}`)}>
                 <span className="film-name">{film.name}</span>
                 <span>{releaseYear}, {film.duration}</span>
                 <span>Country: {film.country}</span>
@@ -80,7 +80,7 @@ function FilmCard({film, number})
                 <span className='marksCount'>{film.marksCount} marks</span>
             </div>
             <div className="watchable-buttons">
-                { IsWantedToWatch ? (
+                { user && IsWantedToWatch ? (
                     <abbr title='I want to watch'>
                         <IoBookmark fill={'#ce9d07'} onClick={() => toggleUserWhoWantedToWatch('detach')} className='watchable-btn'/>
                     </abbr> 
@@ -89,7 +89,7 @@ function FilmCard({film, number})
                         <CiBookmark onClick={() => toggleUserWhoWantedToWatch('attach')} className='watchable-btn'/>
                     </abbr>
                 )}
-                { IsWatched ? (
+                { user && IsWatched ? (
                     <abbr title="I watched">
                         <IoEye onClick={() => toggleUserWhoWatched('detach')} className='watchable-btn'/>
                     </abbr>
@@ -101,7 +101,7 @@ function FilmCard({film, number})
             </div>
             {userRole === 'admin' && (
                 <div className="admin-buttons">
-                    <button onClick={() => navigate(`/admin/film/${film?.id}/edit`)} className='btn btn-success'>Change info</button>
+                    <button onClick={() => navigate(`/admin/films/${film?.id}/edit`)} className='btn btn-success'>Change info</button>
                     <button onClick={() => deleteFilm(film?.id)} className='btn btn-danger'>Delete</button>
                 </div>
             )}
