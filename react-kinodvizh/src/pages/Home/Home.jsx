@@ -3,7 +3,7 @@ import './Home.css';
 import { AuthContext } from '../../contexts/AuthContextProvider';
 import axiosClient from '../../axiosClient';
 import WatchablesList from '../../components/WatchablesList/WatchablesList';
-import { ConfigProvider, Input } from 'antd';
+import { Checkbox, ConfigProvider, Input } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { Dropdown, Space, Typography } from 'antd';
 import SideBar from '../../components/SideBar/SideBar';
@@ -26,6 +26,10 @@ function Home()
     const [searchText, setSearchText] = useState('');
     const [genre, setGenre] = useState(null);
     const [orderBy, setOrderBy] = useState('in order');
+    const [favourites, setFavourites] = useState(false);
+    const [watched, setWatched] = useState(false);
+
+    const { user } = useContext(AuthContext);
 
     const getWatchables = (watchableType, url) => {
         setLoading(true);
@@ -37,7 +41,10 @@ function Home()
             rateUntil,
             genre,
             searchText,
-            orderBy
+            orderBy,
+            favourites,
+            watched,
+            userId: user?.id
         }
 
         if(!url) url = `/${watchableType}`;
@@ -54,7 +61,7 @@ function Home()
 
     useEffect(() => {
         getWatchables(watchableType);
-    }, [country, yearFrom, yearUntil, rateFrom, rateUntil, watchableType, genre, orderBy]);
+    }, [country, yearFrom, yearUntil, rateFrom, rateUntil, watchableType, genre, orderBy, favourites, watched]);
 
     const items=[
         {
@@ -110,31 +117,49 @@ function Home()
                     }}
                 />
             </ConfigProvider>
-            <div className="sort-dropdown">
-            <ConfigProvider
-                theme={{
-                    token: {
-                        colorPrimary: '#ffc107',
-                    },
-                }}
-            >
-                <Dropdown
-                    menu={{
-                        items,
-                        selectable: true,
-                        defaultSelectedKeys: ['1'],
-                        onClick: (item) => {setOrderBy(item.key)}
+            <div className="on-top-row">
+
+            {user ? 
+                <div className="users-preferences-buttons">
+                    <ConfigProvider
+                        theme={{
+                            token: {
+                                colorPrimary: '#ffc107',
+                            },
+                        }}
+                    >
+                        <Checkbox style={{fontWeight: 'bold'}} onChange={(event) => setFavourites(event.target.checked)}>favourites</Checkbox>
+                        <Checkbox style={{fontWeight: 'bold'}} onChange={(event) => setWatched(event.target.checked)}>watched ones</Checkbox>
+                    </ConfigProvider>
+                </div> 
+                : ""
+            }   
+                <div className="sort-dropdown">
+                <ConfigProvider
+                    theme={{
+                        token: {
+                            colorPrimary: '#ffc107',
+                        },
                     }}
                 >
-                    <Typography.Link>
-                        <Space>
-                        <span className='order-by-value'>Sort {orderBy}</span>
-                        <DownOutlined style={{color: 'black'}}/>
-                        </Space>
-                    </Typography.Link>
-                </Dropdown>
-            </ConfigProvider>
-                {/* <SelectableDropdown options={items} title={"Sort by:"}/> */}
+                    <Dropdown
+                        menu={{
+                            items,
+                            selectable: true,
+                            defaultSelectedKeys: ['1'],
+                            onClick: (item) => {setOrderBy(item.key)}
+                        }}
+                    >
+                        <Typography.Link>
+                            <Space>
+                            <span className='order-by-value'>Sort {orderBy}</span>
+                            <DownOutlined style={{color: 'black'}}/>
+                            </Space>
+                        </Typography.Link>
+                    </Dropdown>
+                </ConfigProvider>
+                    {/* <SelectableDropdown options={items} title={"Sort by:"}/> */}
+                </div>
             </div>
             {loading && (<span className='mt-5'>Loading...</span>)}
             {!loading && (

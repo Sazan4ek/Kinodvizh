@@ -8,8 +8,8 @@ function Login()
 {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    const { login, errors } = useContext(AuthContext)
+    const [errors, setErrors] = useState([]);
+    const { login } = useContext(AuthContext)
 
     const handleLogin = (event) => {
         event.preventDefault();
@@ -17,7 +17,7 @@ function Login()
             email: email,
             password: password,
         }
-        login(payload);
+        login(payload, setErrors);
     }
     
     return (
@@ -31,12 +31,8 @@ function Login()
                     className={'auth-input'} 
                     value={email}
                     onChange={event => setEmail(event.target.value)}
+                    error={errors.email ? errors.email[0] : null}
                 />
-                {errors.email && (
-                    <div className='alert-danger'>
-                        {errors.email[0]}
-                    </div>
-                )}
                 <InputWithLabel 
                     type={'password'} 
                     label={'Password'}
@@ -44,12 +40,9 @@ function Login()
                     className={'auth-input'} 
                     value={password}
                     onChange={event => setPassword(event.target.value)}
+                    error={errors.password ? errors.password[0] : null}
                 />
-                {errors.password && (
-                    <div className='alert-danger'>
-                        {errors.password[0]}
-                    </div>
-                )}
+                
                 <button className="blue-btn mt-2" onClick={handleLogin}>Login</button>
                 <p className="message">
                     Not Registered? <Link to= '/register'>Create a new account</Link>

@@ -52,23 +52,23 @@ function SideBar({props})
                 </div>
                 <div className="countries-dropdown-container">
                     <span className='country'>Country: </span>
-                <Select
-                    showSearch
-                    allowClear
-                    placeholder="Select the country"
-                    optionFilterProp="label"
-                    onChange={(country) => setCountry(country)}
-                    options={Object.values(countriesList)?.map((country) => { 
-                        return {
-                            value: country, 
-                            label: country
-                        };
-                    })}
-                    style={{
-                        width: 'fit-content', 
-                        minWidth: '40px'
-                    }}
-                />
+                    <Select
+                        showSearch
+                        allowClear
+                        placeholder="Select the country"
+                        optionFilterProp="label"
+                        onChange={(country) => setCountry(country)}
+                        options={Object.values(countriesList)?.map((country) => { 
+                            return {
+                                value: country, 
+                                label: country
+                            };
+                        })}
+                        style={{
+                            width: 'fit-content', 
+                            minWidth: '40px',
+                        }}
+                    />
                 </div>
                 <div className="countries-dropdown-container">
                     <span className='genre'>Genre: </span>

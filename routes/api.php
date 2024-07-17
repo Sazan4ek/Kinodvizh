@@ -11,6 +11,7 @@ use App\Http\Controllers\GenreController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SeriesController;
 use App\Http\Controllers\UserRoleController;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,7 +27,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
+    return User::with('role')->find($request->user()->id);
 });
 
 Route::post('/register', [RegisteredUserController::class, 'store'])
@@ -60,8 +61,6 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
 Route::post('/films', [FilmController::class, 'index']);
 Route::post('/series', [SeriesController::class, 'index']);
 
-Route::get('/user/role', [UserRoleController::class, 'index']);
-
 Route::post('/film/toggleUserWhoWantedToWatch', [FilmController::class, 'toggleUserWhoWantedToWatch'])
     ->middleware('auth');
 
@@ -91,3 +90,13 @@ Route::patch('review/{reviewId}/toggleDislike', [ReviewController::class, 'toggl
 
 Route::post('/reviews/create', [ReviewController::class, 'store'])
     ->middleware('auth');
+
+Route::middleware('admin')->prefix('admin')->group(function () {
+    Route::patch('films/{film}', [FilmController::class, 'update']);
+    Route::patch('series/{series}', [SeriesController::class, 'update']);
+
+    Route::delete('films/{film}', [FilmController::class, 'destroy']);
+    Route::delete('series/{series}', [SeriesController::class, 'destroy']);
+
+    Route::patch('reviews/{review}', [ReviewController::class, 'blockText']);
+});

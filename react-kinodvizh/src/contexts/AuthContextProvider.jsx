@@ -8,26 +8,25 @@ function AuthContextProvider({children})
 {
     const [user, setUser] = useState(null);
     const [userRole, setUserRole] = useState(null);
-    const [errors, setErrors] = useState([])
     const navigate = useNavigate();
 
     const getUser = async () => {
-        const {data} = await axiosClient.get('/user');
-        setUser(data);
-    }
-
-    const getUserRole = async () => {
-        const {data} = await axiosClient.get('user/role');
-        setUserRole(data);
-    }
-
-    const register = async (payload) => {
         try {
+            await axiosClient.get('/user')
+            .then(({data}) => {setUser(data); setUserRole(data.role.name)})
+        }
+        catch(error) {}
+    }
+
+    const register = async (payload, setErrors) => {
+        try {
+            localStorage.setItem('IS_LOGGED_IN', 'true');
             await axiosClient.post('/register', payload);
             await getUser();
             navigate('/');
         }   
         catch(error) {
+            localStorage.removeItem('IS_LOGGED_IN');
             if(error.response.status === 422)
             {
                 setErrors(error.response.data.errors);
@@ -35,14 +34,16 @@ function AuthContextProvider({children})
         };
     }
 
-    const login = async (payload) => {
+    const login = async (payload, setErrors) => {
         
         try {
+            localStorage.setItem('IS_LOGGED_IN', 'true');
             await axiosClient.post('/login', payload);
             await getUser();
             navigate('/');
         }
         catch(error) {
+            localStorage.removeItem('IS_LOGGED_IN');
             if(error.response.status === 422)
             {
                 setErrors(error.response.data.errors);
@@ -51,14 +52,15 @@ function AuthContextProvider({children})
     }
 
     const logout = async () => {
+        localStorage.removeItem('IS_LOGGED_IN');
         axiosClient.post('/logout').then(() => {
-            setUser(null)
+            setUser(null);
+            setUserRole(null);
         });
     }
 
     useEffect(() => {
-        if(!user) getUser();
-        if(!userRole) getUserRole();
+        if(!user && localStorage.getItem('IS_LOGGED_IN') === 'true') getUser();
     },[]);
 
     return (
@@ -66,7 +68,6 @@ function AuthContextProvider({children})
             user, 
             userRole,
             getUser,
-            errors,
             register,
             login,
             logout

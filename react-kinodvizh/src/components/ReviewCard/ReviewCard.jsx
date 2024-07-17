@@ -6,17 +6,27 @@ import { BiLike } from "react-icons/bi";
 import { BiSolidLike } from "react-icons/bi";
 import { BiSolidDislike } from "react-icons/bi";
 import { BiDislike } from "react-icons/bi";
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import axiosClient from '../../axiosClient';
+import { AuthContext } from '../../contexts/AuthContextProvider';
 
 function ReviewCard({review})
 {
+    const { userRole } = useContext(AuthContext);
+
     const [likesCount, setLikesCount] = useState(review?.likesCount);
     const [dislikesCount, setDislikesCount] = useState(review?.dislikesCount);
     const [isLiked, setIsLiked] = useState(false);
     const [isDisliked, setIsDisliked] = useState(false);
+    const [reviewText, setReviewText] = useState(review.text);
     const writer = review?.user;
     const desc = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+    const blockReview = async (reviewId) => {
+        await axiosClient.patch(`admin/reviews/${reviewId}`)
+            .then(({data}) => setReviewText(data))
+            .catch(error => console.log(error));
+    }
 
     const toggleLike = async (action) => {
         const payload = {
@@ -66,10 +76,15 @@ function ReviewCard({review})
             </div>
             <div className="middle-row">
                 <p className='review-text'>
-                    {review.text}
+                    {reviewText}
                 </p>
             </div>
             <div className="down-row">
+                {userRole === 'admin' && (
+                    <div className="admin-delete-review-btn">
+                        <button onClick={() => blockReview(review?.id)} className='btn btn-danger'>Block the review text</button>
+                    </div>
+                )}
                 <span>
                     {(isLiked ? (
                         <BiSolidLike onClick={() => toggleLike('subtract') } className='review-like'/> 

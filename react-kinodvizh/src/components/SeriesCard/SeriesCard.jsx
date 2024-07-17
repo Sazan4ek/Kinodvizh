@@ -17,11 +17,17 @@ function SeriesCard({series, number})
 
     const navigate = useNavigate();
 
-    const { user } = useContext(AuthContext);
+    const { user, userRole } = useContext(AuthContext);
 
     const [IsWantedToWatch, setIsWantedToWatch] = useState(series?.users_who_wanted_to_watch?.some((elem)=> elem.id === user?.id));
     const [IsWatched, setIsWatched] = useState(series?.users_who_watched?.some((elem)=> elem.id === user?.id));
+    const [isDeleted, setIsDeleted] = useState(false);
 
+    const deleteSeries = async (seriesId) => {
+        await axiosClient.delete(`admin/series/${seriesId}`)
+            .then(() => setIsDeleted(true))
+            .catch(error => console.log(error));
+    }
 
     const toggleUserWhoWantedToWatch = async (func) => {
         const payload = {
@@ -30,7 +36,7 @@ function SeriesCard({series, number})
             func
         }
         axiosClient.post('series/toggleUserWhoWantedToWatch', payload)
-        .then(() => { setIsWantedToWatch(!IsWantedToWatch); })
+        .then(() => setIsWantedToWatch(!IsWantedToWatch))
         .catch(error => console.log(error));
     }
 
@@ -41,9 +47,11 @@ function SeriesCard({series, number})
             func
         }
         axiosClient.post('series/toggleUserWhoWatched', payload)
-        .then(() => { setIsWatched(!IsWatched); })
+        .then(() => setIsWatched(!IsWatched))
         .catch(error => console.log(error));
     }
+
+    if(isDeleted) return <></>;
 
     return (
         <div className="watchable-card">
@@ -91,6 +99,12 @@ function SeriesCard({series, number})
                     </abbr>
                 )}
             </div>
+            {userRole === 'admin' && (
+                <div className="admin-buttons">
+                    <button onClick={() => navigate(`/admin/series/${series?.id}/edit`)} className='btn btn-success'>Change info</button>
+                    <button onClick={() => deleteSeries(series?.id)} className='btn btn-danger'>Delete</button>
+                </div>
+            )}
         </div>
     );
 }

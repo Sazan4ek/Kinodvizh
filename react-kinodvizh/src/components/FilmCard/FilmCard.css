@@ -29,13 +29,16 @@
 .watchable-info {
     display: flex;
     flex-direction: column;
+    gap: 5px;
     align-items: flex-start;
     margin-left: 10px;
     cursor: pointer;
+    max-width: 40%;
 }
 .watchable-info span {
     font-size: 2vh;
     color: rgb(115, 115, 115);
+    text-wrap: wrap;
 }
 .film-name {
     font-size: 3.5vh !important;
@@ -61,4 +64,11 @@
 .watchable-btn {
     font-size: 4vh;
     cursor: pointer;
+}
+.admin-buttons {
+    position: absolute;
+    right: 3%;
+    bottom: 10%;
+    display: flex;
+    gap: 10px;
 }

@@ -86,6 +86,20 @@ class Series extends Model
         $searchText = $filterData->searchText;
         if($searchText !== "") $sqlQuery->where('name', 'like', "%$searchText%");
 
+        $userId = $filterData->userId;
+
+        $favourites = $filterData->favourites;
+        if($favourites === true) 
+            $sqlQuery->whereHas('usersWhoWantedToWatch', function($query) use ($userId) {
+                $query->where('users.id', $userId);
+            });
+        
+        $watched = $filterData->watched;
+        if($watched === true)
+            $sqlQuery->whereHas('usersWhoWatched', function($query) use ($userId) {
+                $query->where('users.id', $userId);
+            });
+
         $orderBy = $filterData->orderBy;
         if($orderBy === 'by marks count') $sqlQuery->orderBy('marksCount', 'desc');
         else if($orderBy === 'by rating') $sqlQuery->orderBy('rating', 'desc');

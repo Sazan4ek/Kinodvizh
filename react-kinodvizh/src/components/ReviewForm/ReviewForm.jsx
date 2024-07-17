@@ -14,7 +14,7 @@ function ReviewForm({watchableType, watchable, setReviews, rating, setRating, ma
 
     const desc = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     const [inputRating, setInputRating] = useState(0);
-    const [reviewText, setReviewText] = useState();
+    const [reviewText, setReviewText] = useState("");
 
     const makeReview = async (event) => {
         event.preventDefault();

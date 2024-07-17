@@ -1,13 +1,13 @@
 import { useContext } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContextProvider";
-
 
 function AdminLayout()
 {
-    const { userRole } = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
 
-    return userRole === 'admin' ? <Outlet/> : <Navigate to={'/'}/>;
+    return user?.role?.name === 'admin' ? <Outlet/> : navigate('/');
 }
 
 export default AdminLayout;

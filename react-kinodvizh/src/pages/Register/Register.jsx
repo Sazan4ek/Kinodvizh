@@ -10,8 +10,9 @@ function Register()
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordConfirmation, setPasswordConfirmation] = useState('');
+    const [errors, setErrors] = useState([]);
 
-    const { register, errors } = useContext(AuthContext);
+    const { register } = useContext(AuthContext);
 
     const handleRegister = async (event) => {
         event.preventDefault();
@@ -22,7 +23,7 @@ function Register()
             password: password,
             password_confirmation: passwordConfirmation
         }
-        register(payload);  
+        register(payload, setErrors);  
     }
 
     return(
@@ -37,12 +38,8 @@ function Register()
                         className={'auth-input'} 
                         value={firstName}
                         onChange={event => setFirstName(event.target.value)}
+                        error={errors.firstName ? errors.firstName[0] : null}
                     />
-                    {errors.firstName && (
-                        <div className='alert-danger'>
-                            {errors.firstName[0]}
-                        </div>
-                    )}
                     <InputWithLabel 
                         type={'text'} 
                         label={'Last Name'} 
@@ -50,12 +47,8 @@ function Register()
                         className={'auth-input'}
                         value={lastName}
                         onChange={event => setLastName(event.target.value)}
+                        error={errors.lastName ? errors.lastName[0] : null}
                     />
-                    {errors.lastName && (
-                        <div className='alert-danger'>
-                            {errors.lastName[0]}
-                        </div>
-                    )}
                     <InputWithLabel 
                         type={'text'} 
                         label={'Email'} 
@@ -63,12 +56,8 @@ function Register()
                         className={'auth-input'} 
                         value={email}
                         onChange={event => setEmail(event.target.value)}
+                        error={errors.email ? errors.email[0] : null}
                     />
-                    {errors.email && (
-                        <div className='alert-danger'>
-                            {errors.email[0]}
-                        </div>
-                    )}
                     <InputWithLabel 
                         type={'password'} 
                         label={'Password'}
@@ -76,12 +65,8 @@ function Register()
                         className={'auth-input'} 
                         value={password}
                         onChange={event => setPassword(event.target.value)}
+                        error={errors.password ? errors.password[0] : null}
                     />
-                    {errors.password && (
-                        <div className='alert-danger'>
-                            {errors.password[0]}
-                        </div>
-                    )}
                     <InputWithLabel 
                         type={'password'} 
                         label={'Confirm your password'} 
@@ -89,12 +74,8 @@ function Register()
                         className={'auth-input'} 
                         value={passwordConfirmation}
                         onChange={event => setPasswordConfirmation(event.target.value)}
+                        error={errors.passwordConfirmation ? errors.passwordConfirmation[0] : null}
                     />
-                    {errors.passwordConfirmation && (
-                        <div className='alert-danger'>
-                            {errors.passwordConfirmation[0]}
-                        </div>
-                    )}
                     <button className="blue-btn mt-2" onClick={handleRegister}>Register</button>
                     <p className="message">
                         Already Have An Account? <Link to= '/login'>Login</Link>

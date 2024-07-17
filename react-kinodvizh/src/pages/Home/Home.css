@@ -1,13 +1,27 @@
 .sort-dropdown {
+    position: relative;
     height: fit-content;
     width: fit-content;
     margin-top: 20px;
-    transform: translateX(19vw);
     background-color: rgb(233, 233, 233);
     padding: 10px 15px;
     border-radius: 10px;
+    justify-self: flex-end;
 }
 .order-by-value {
     color: black;
     font-weight: bold;
+}
+.users-preferences-buttons {
+    display: flex;
+    gap: 10px;
+    height: fit-content;
+}
+.on-top-row {
+    position: relative;
+    min-width: 48vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    /* margin-top: 40px; */
 }

@@ -21,7 +21,7 @@ class StorageFactory extends Factory
         self::$is_poster = !self::$is_poster;
         return [
             'type' => self::$is_poster ? 'poster' : 'trailer', 
-            'uri' => fake()->imageUrl()
+            'uri' => self::$is_poster ? fake()->imageUrl() : 'https://dn720303.ca.archive.org/0/items/rick-astley-never-gonna-give-you-up-hd-4-k-60-fps/Rick%20Astley%20Never%20Gonna%20Give%20You%20Up%20HD%204K%2060%20FPS.mp4'
         ];
     }
 }

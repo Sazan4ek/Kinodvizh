@@ -30,12 +30,18 @@
     margin: 0;
 }
 .down-row {
+    position: relative;
     display: flex;
     justify-content: flex-end;
     width: 100%;
     gap: 20px;
+    padding-bottom: 10px;
 }
 .review-like {
     font-size: 30px;
     cursor: pointer;
+}
+.admin-delete-review-btn {
+    position: absolute;
+    left: 0;
 }

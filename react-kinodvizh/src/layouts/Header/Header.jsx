@@ -21,7 +21,7 @@ function Header()
             <div className="user-panel">
                 {user ? (
                     <>
-                        <Link to={`/user/${user.id}/profile`} className="d-flex gap-2 without-underline">
+                        <Link to={`/user/${user?.id}/profile`} className="d-flex gap-2 without-underline">
                             <RiUserLine className="user-icon"/>
                             <span className="user-fullName">
                                 {user.first_name + ' '}

@@ -13,7 +13,7 @@ class ReviewController extends Controller
     {
         $review = Review::create([
             'rating' => $request->rating,
-            'text' => $request->text,
+            'text' => $request->text ?? "",
             'user_id' => $request->userId
         ]);
 
@@ -32,6 +32,14 @@ class ReviewController extends Controller
         $watchable->save();
 
         return [$watchable->reviews()->with('user')->get(), $marksCount, $watchable->rating];
+    }
+
+    public function blockText(Review $review)
+    {   
+        $newText = $review->text = '*Review text was blocked by the moderator*';
+        $review->save();
+
+        return response()->json($newText);
     }
 
     public function toggleLike(Request $request)

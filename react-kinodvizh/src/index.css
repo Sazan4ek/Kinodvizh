@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  /* border: 1px red solid; */
+  /* border: 1px red solid; In case of emergency*/ 
 }
 
 .wrapper {
@@ -26,4 +26,8 @@
 }
 abbr {
   font-variant: all-small-caps;
+}
+video {
+  aspect-ratio: 16/9;
+  box-shadow: 0 0 10px 4px;
 }

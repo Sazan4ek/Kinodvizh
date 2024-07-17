@@ -24,12 +24,12 @@ return new class extends Migration
             $table->unsignedTinyInteger('ageLimit')->nullable();
             $table->time('duration');
             $table->text('description')->nullable();
-            $table->unsignedDecimal('expertRating', 3, 1)->nullable();
-            $table->unsignedDecimal('rating', 3, 1)->nullable();
+            $table->unsignedDecimal('expertRating', 3, 1)->default(0);
+            $table->unsignedDecimal('rating', 3, 1)->default(0);
             $table->unsignedBigInteger('marksSum')->default(0);
             $table->unsignedBigInteger('expertMarksCount')->default(0);
             $table->unsignedBigInteger('expertMarksSum')->default(0);
-            $table->unsignedBigInteger('marksCount')->nullable();
+            $table->unsignedBigInteger('marksCount')->default(0);
             $table->timestamps();
         });
     }

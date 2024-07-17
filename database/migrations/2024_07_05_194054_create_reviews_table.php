@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->nullableMorphs('reviewable');
             $table->unsignedInteger('rating');
-            $table->text('text');
+            $table->text('text')->default("");
             $table->unsignedBigInteger('likesCount')->default(0);
             $table->unsignedBigInteger('dislikesCount')->default(0);
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();

@@ -10,6 +10,9 @@ import Home from "./pages/Home/Home";
 import AuthLayout from "./layouts/AuthLayout";
 import FilmPage from "./pages/FilmPage/FilmPage";
 import SeriesPage from "./pages/SeriesPage/SeriesPage";
+import UpdateFilmPage from "./pages/UpdateFilmPage/UpdateFilmPage";
+import UpdateSeriesPage from "./pages/UpdateSeriesPage/UpdateSeriesPage";
+import UserProfile from "./pages/UserProfile/UserProfile";
 
 function Router()
 {
@@ -35,8 +38,8 @@ function Router()
                     element: <AuthLayout/>,
                     children: [
                         {
-                            path: 'me',
-                            element: <></>
+                            path: 'user/:userId/profile',
+                            element: <UserProfile/>
                         }
                     ]
                 },
@@ -55,12 +58,16 @@ function Router()
                     ]
                 },
                 {
-                    path: '',
+                    path: '/admin/',
                     element: <AdminLayout/>,
                     children: [
                         {
-                            path: 'dashboard',
-                            element: <Dashboard/>
+                            path: 'film/:filmId/edit',
+                            element: <UpdateFilmPage />
+                        },
+                        {
+                            path: 'series/:seriesId/edit',
+                            element: <UpdateSeriesPage />
                         }
                     ]
                 },

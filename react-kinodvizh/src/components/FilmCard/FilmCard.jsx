@@ -7,7 +7,7 @@ import { IoBookmark } from "react-icons/io5";
 import { useContext, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthContextProvider';
 import axiosClient from '../../axiosClient';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function FilmCard({film, number})
 {
@@ -17,11 +17,17 @@ function FilmCard({film, number})
 
     const navigate = useNavigate();
 
-    const { user } = useContext(AuthContext);
+    const { user, userRole } = useContext(AuthContext);
 
     const [IsWantedToWatch, setIsWantedToWatch] = useState(film?.users_who_wanted_to_watch?.some((elem)=> elem.id === user?.id));
     const [IsWatched, setIsWatched] = useState(film?.users_who_watched?.some((elem)=> elem.id === user?.id));
+    const [isDeleted, setIsDeleted] = useState(false);
 
+    const deleteFilm = async (filmId) => {
+        await axiosClient.delete(`admin/films/${filmId}`)
+            .then(() => setIsDeleted(true))
+            .catch(error => console.log(error));
+    }
 
     const toggleUserWhoWantedToWatch = async (func) => {
         const payload = {
@@ -44,6 +50,8 @@ function FilmCard({film, number})
         .then(() => { setIsWatched(!IsWatched); })
         .catch(error => console.log(error));
     }
+
+    if(isDeleted) return <></>;
 
     return (
         <div className="watchable-card">
@@ -91,6 +99,12 @@ function FilmCard({film, number})
                     </abbr>
                 )}
             </div>
+            {userRole === 'admin' && (
+                <div className="admin-buttons">
+                    <button onClick={() => navigate(`/admin/film/${film?.id}/edit`)} className='btn btn-success'>Change info</button>
+                    <button onClick={() => deleteFilm(film?.id)} className='btn btn-danger'>Delete</button>
+                </div>
+            )}
         </div>
     );
 }

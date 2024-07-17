@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FilmRequest;
 use App\Models\Film;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,21 @@ class FilmController extends Controller
         return $filmsList;
     }
 
+    public function update(FilmRequest $request, Film $film)
+    {
+        $film->update($request->except('genresId'));
+        $film->genres()->sync($request->genresId);
+
+        return response()->noContent();
+    }
+
+    public function destroy(Film $film)
+    {
+        $film->delete();
+
+        return response()->noContent();
+    }
+    
     public function toggleUserWhoWantedToWatch(Request $request)
     {
         $film = Film::find($request->film_id);

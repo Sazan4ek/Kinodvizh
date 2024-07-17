@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axiosClient from "../../axiosClient";
 import { useContext, useEffect, useState } from "react";
 import './FilmPage.css';
@@ -21,12 +21,19 @@ function FilmPage()
     const posterUrl = film?.materials.find((material) => material.type === 'poster').uri;
     const trailerUrl = film?.materials.find((material) => material.type === 'trailer').uri;
     const genres = film?.genres;
-    console.log(film, reviews);
 
-    const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const { user, userRole } = useContext(AuthContext);
 
     const [IsWantedToWatch, setIsWantedToWatch] = useState(film?.users_who_wanted_to_watch?.some((elem)=> elem.id === user?.id));
     const [IsWatched, setIsWatched] = useState(film?.users_who_watched?.some((elem)=> elem.id === user?.id));
+
+    const deleteFilm = async (filmId) => {
+        await axiosClient.delete(`admin/films/${filmId}`)
+            .then(() => navigate('/'))
+            .catch(error => console.log(error));
+    }
 
     const toggleUserWhoWantedToWatch = async (func) => {
         const payload = {
@@ -81,14 +88,14 @@ function FilmPage()
 
     return (
         <>
-            {console.log(film)}
             <div className="film-container">
                 <div className="left-side">
                     <div className="poster-container">
                         <img src={posterUrl} alt="film-poster" width={'300'}/>
                     </div>
-                    <div className="trailer-container">
-                    <img src={trailerUrl} alt="film-trailer" width={300}/>
+                    <div className="d-flex flex-column gap-2 trailer-container">
+                        <h1>Trailer:</h1>
+                        <video controls src={trailerUrl} alt="film-trailer" width={300}></video>
                     </div>
                         
                 </div>
@@ -114,6 +121,12 @@ function FilmPage()
                             <abbr title="not watched">
                                 <MdOutlineRemoveRedEye onClick={() => toggleUserWhoWatched('attach')} className='middle-watchable-btn'/>
                             </abbr>
+                        )}
+                        {userRole === 'admin' && (
+                            <>
+                                <button onClick={() => navigate(`/admin/film/${film?.id}/edit`)} className='btn btn-success'>Change info</button>
+                                <button onClick={() => deleteFilm(film?.id)} className='btn btn-danger'>Delete</button>
+                            </>
                         )}
                     </div>
                     <div className="film-about-container">
@@ -189,7 +202,7 @@ function FilmPage()
                 rating={rating} 
                 setRating={setRating}
             />
-            <ReviewsList reviews={reviews} watchable={film}/>
+            <ReviewsList reviews={reviews}/>
         </>
     )
 }

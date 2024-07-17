@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axiosClient from "../../axiosClient";
 import { useContext, useEffect, useState } from "react";
 import './SeriesPage.css';
@@ -21,12 +21,19 @@ function SeriesPage()
     const posterUrl = series?.materials.find((material) => material.type === 'poster').uri;
     const trailerUrl = series?.materials.find((material) => material.type === 'trailer').uri;
     const genres = series?.genres;
-    console.log(series, reviews);
 
-    const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const { user, userRole } = useContext(AuthContext);
 
     const [IsWantedToWatch, setIsWantedToWatch] = useState(series?.users_who_wanted_to_watch?.some((elem)=> elem.id === user?.id));
     const [IsWatched, setIsWatched] = useState(series?.users_who_watched?.some((elem)=> elem.id === user?.id));
+
+    const deleteSeries = async (seriesId) => {
+        await axiosClient.delete(`admin/series/${seriesId}`)
+            .then(() => navigate('/?watchable=series'))
+            .catch(error => console.log(error));
+    }
 
     const toggleUserWhoWantedToWatch = async (func) => {
         const payload = {
@@ -81,7 +88,6 @@ function SeriesPage()
 
     return (
         <>
-            {console.log(series)}
             <div className="series-container">
                 <div className="left-side">
                     <div className="poster-container">
@@ -114,6 +120,12 @@ function SeriesPage()
                             <abbr title="not watched">
                                 <MdOutlineRemoveRedEye onClick={() => toggleUserWhoWatched('attach')} className='middle-watchable-btn'/>
                             </abbr>
+                        )}
+                        {userRole === 'admin' && (
+                            <>
+                                <button onClick={() => navigate(`/admin/series/${series?.id}/edit`)} className='btn btn-success'>Change info</button>
+                                <button onClick={() => deleteSeries(series?.id)} className='btn btn-danger'>Delete</button>
+                            </>
                         )}
                     </div>
                     <div className="series-about-container">
