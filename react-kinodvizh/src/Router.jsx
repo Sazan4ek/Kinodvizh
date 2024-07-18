@@ -1,7 +1,7 @@
 import { useRoutes } from "react-router-dom";
 import AdminLayout from "./layouts/AdminLayout";
 import GuestLayout from "./layouts/GuestLayout";
-import Error404 from "./pages/Error404";
+import Error404 from "./pages/Error404/Error404";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import MainLayout from "./layouts/MainLayout"; 

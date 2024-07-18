@@ -30,6 +30,7 @@ function SeriesCard({series, number})
     }
 
     const toggleUserWhoWantedToWatch = async (func) => {
+        if(!user) navigate('/login');
         const payload = {
             series_id: series.id,
             user_id: user.id,
@@ -41,6 +42,7 @@ function SeriesCard({series, number})
     }
 
     const toggleUserWhoWatched = async (func) => {
+        if(!user) navigate('/login');
         const payload = {
             series_id: series.id,
             user_id: user.id,

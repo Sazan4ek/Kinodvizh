@@ -5,6 +5,7 @@ import axiosClient from "../../axiosClient";
 import TextArea from "antd/es/input/TextArea";
 import './UpdateFilmPage.css';
 import { Select } from "antd";
+import Error404 from "../Error404/Error404";
 
 function UpdateFilmPage()
 {
@@ -23,6 +24,7 @@ function UpdateFilmPage()
     const [ageLimit, setAgeLimit]= useState(null);
     const [duration, setDuration]= useState('');
     const [description, setDescription]= useState('');
+    const [isWrongRoute, setIsWrongRoute] = useState(false);
 
     const navigate = useNavigate();
 
@@ -45,6 +47,10 @@ function UpdateFilmPage()
         await axiosClient.patch(`admin/films/${filmId}`, payload)
             .then(() => navigate(-1))
             .catch(errors => {
+                if(errors.response.status === 404)
+                {
+                    setIsWrongRoute(true);
+                }
                 if(errors.response.status === 422)
                 {
                     setErrors(errors.response.data.errors);
@@ -75,6 +81,10 @@ function UpdateFilmPage()
                 setDescription(data?.description);
             })
             .catch(errors => {
+                if(errors.response.status === 404)
+                {
+                    setIsWrongRoute(true);
+                }
                 if(errors.response.status === 422)
                 {
                     setErrors(errors.response.data.errors);
@@ -86,6 +96,8 @@ function UpdateFilmPage()
             })
             .catch(error => console.log(error));
     }, [])
+
+    if(isWrongRoute) return <Error404/>;
 
     return(
         <>

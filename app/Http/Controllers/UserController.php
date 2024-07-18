@@ -10,7 +10,7 @@ class UserController extends Controller
 {
     public function show(Request $request, $userId)
     {
-        $user = User::with($request->with)->find($userId);
+        $user = User::with($request->with)->findOrFail($userId);
 
         return $user;
     }

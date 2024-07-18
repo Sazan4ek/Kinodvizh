@@ -5,6 +5,7 @@ import { Rate } from 'antd';
 import { Input } from 'antd';
 import { AuthContext } from "../../contexts/AuthContextProvider";
 import axiosClient from "../../axiosClient";
+import { useNavigate } from "react-router-dom";
 
 const { TextArea } = Input;
 
@@ -16,12 +17,15 @@ function ReviewForm({watchableType, watchable, setReviews, rating, setRating, ma
     const [inputRating, setInputRating] = useState(0);
     const [reviewText, setReviewText] = useState("");
 
+    const navigate = useNavigate();
+
     const makeReview = async (event) => {
         event.preventDefault();
+        if(!user) navigate('/login');
         const payload = {
             text:  reviewText,
             rating: inputRating,
-            userId: user.id,
+            userId: user?.id,
             watchableType: watchableType
         }
         if(watchableType === 'film') payload.filmId = watchable?.id;

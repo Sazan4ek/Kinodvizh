@@ -24,6 +24,9 @@ class SeriesController extends Controller
 
     public function destroy(Series $series)
     {
+        $series->materials()->delete();
+        $series->genres()->delete();
+        $series->reviews()->delete();
         $series->delete();
 
         return response()->noContent();
@@ -31,7 +34,7 @@ class SeriesController extends Controller
 
     public function toggleUserWhoWantedToWatch(Request $request)
     {
-        $series = Series::find($request->series_id);
+        $series = Series::findOrFail($request->series_id);
         $userId = $request->user_id;
         $func = $request->func;
         $series->usersWhoWantedToWatch()->$func($userId);
@@ -41,7 +44,7 @@ class SeriesController extends Controller
 
     public function toggleUserWhoWatched(Request $request)
     {
-        $series = Series::find($request->series_id);
+        $series = Series::findOrFail($request->series_id);
         $userId = $request->user_id;
         $func = $request->func;
         $series->usersWhoWatched()->$func($userId);
@@ -56,6 +59,6 @@ class SeriesController extends Controller
 
     public function getSeriesWith(Request $request, $seriesId)
     {
-        return Series::with($request->with)->find($seriesId);
+        return Series::with($request->with)->findOrFail($seriesId);
     }
 }

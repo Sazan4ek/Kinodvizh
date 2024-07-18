@@ -9,6 +9,7 @@ import { AuthContext } from "../../contexts/AuthContextProvider";
 import ColorfulRating from "../../components/ColorfulRating/ColorfulRating";
 import ReviewsList from "../../components/ReviewsList/ReviewsList";
 import ReviewForm from "../../components/ReviewForm/ReviewForm";
+import Error404 from "../Error404/Error404";
 
 function SeriesPage() 
 {
@@ -18,16 +19,17 @@ function SeriesPage()
     const [marksCount, setMarksCount] = useState(null);
     const [rating, setRating] = useState(null);
     const [loading, setLoading] = useState(false);
-    const posterUrl = series?.materials.find((material) => material.type === 'poster').uri;
-    const trailerUrl = series?.materials.find((material) => material.type === 'trailer').uri;
+    const [isWrongRoute, setIsWrongRoute] = useState(false);
+    const posterUrl = series?.materials?.find((material) => material.type === 'poster').uri;
+    const trailerUrl = series?.materials?.find((material) => material.type === 'trailer').uri;
     const genres = series?.genres;
 
     const navigate = useNavigate();
 
     const { user, userRole } = useContext(AuthContext);
 
-    const [IsWantedToWatch, setIsWantedToWatch] = useState(series?.users_who_wanted_to_watch?.some((elem)=> elem.id === user?.id));
-    const [IsWatched, setIsWatched] = useState(series?.users_who_watched?.some((elem)=> elem.id === user?.id));
+    const [IsWantedToWatch, setIsWantedToWatch] = useState(false);
+    const [IsWatched, setIsWatched] = useState(false);
 
     const deleteSeries = async (seriesId) => {
         await axiosClient.delete(`admin/series/${seriesId}`)
@@ -36,6 +38,7 @@ function SeriesPage()
     }
 
     const toggleUserWhoWantedToWatch = async (func) => {
+        if(!user) navigate('/login');
         const payload = {
             series_id: series.id,
             user_id: user.id,
@@ -47,6 +50,7 @@ function SeriesPage()
     }
 
     const toggleUserWhoWatched = async (func) => {
+        if(!user) navigate('/login');
         const payload = {
             series_id: series.id,
             user_id: user.id,
@@ -75,13 +79,23 @@ function SeriesPage()
                 setMarksCount(data.marksCount);
                 setRating(data.rating); 
                 setReviews(data.reviews);
+                setIsWantedToWatch(series?.users_who_wanted_to_watch?.some((elem)=> elem.id === user?.id));
+                setIsWatched(series?.users_who_watched?.some((elem)=> elem.id === user?.id));
             })
-            .catch(error => {console.log(error); setLoading(false);});
+            .catch(errors => {
+                setLoading(false);
+                if(errors.response.status === 404)
+                {
+                    setIsWrongRoute(true);
+                }
+            });
     }
 
     useEffect(() => {
         getSeries(seriesId)
     }, [])
+
+    if(isWrongRoute) return <Error404/>;
 
     if(loading) return <span className='mt-5'>Loading...</span>;
 

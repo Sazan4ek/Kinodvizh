@@ -17,8 +17,8 @@ class ReviewController extends Controller
             'user_id' => $request->userId
         ]);
 
-        if($request->watchableType === 'film') $watchable = Film::find($request->filmId);
-        else $watchable = Series::find($request->seriesId);
+        if($request->watchableType === 'film') $watchable = Film::findOrFail($request->filmId);
+        else $watchable = Series::findOrFail($request->seriesId);
 
         $watchable->marksCount++;
         $watchable->marksSum += $request->rating;
@@ -44,7 +44,7 @@ class ReviewController extends Controller
 
     public function toggleLike(Request $request)
     {
-        $review = Review::find($request->reviewId);
+        $review = Review::findOrFail($request->reviewId);
         if($request->action === 'add') $review->likesCount++;
         else $review->likesCount--;
         $review->save();
@@ -53,7 +53,7 @@ class ReviewController extends Controller
 
     public function toggleDislike(Request $request)
     {
-        $review = Review::find($request->reviewId);
+        $review = Review::findOrFail($request->reviewId);
         if($request->action === 'add') $review->dislikesCount++;
         else $review->dislikesCount--;
         $review->save();

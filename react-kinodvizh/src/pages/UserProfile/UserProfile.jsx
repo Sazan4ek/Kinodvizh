@@ -3,7 +3,7 @@ import './UserProfile.css';
 import { AuthContext } from '../../contexts/AuthContextProvider';
 import { useNavigate, useParams } from 'react-router-dom';
 import axiosClient from '../../axiosClient';
-import Error404 from '../Error404';
+import Error404 from '../Error404/Error404';
 import ReviewsList from '../../components/ReviewsList/ReviewsList';
 
 function UserProfile() 
@@ -25,7 +25,6 @@ function UserProfile()
       axiosClient.post(`/users/${userId}`, payload)
         .then(({data}) => {console.log(data); setCurrentUser(data); setUserReviews(data.reviews)})
         .catch((error) => {
-          console.log(error);
           if(error.response.status === 404)
           {
             setIsWrongRoute(true);

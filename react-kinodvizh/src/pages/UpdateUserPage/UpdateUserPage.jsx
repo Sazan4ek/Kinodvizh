@@ -4,6 +4,7 @@ import { AuthContext } from '../../contexts/AuthContextProvider';
 import { useNavigate, useParams } from 'react-router-dom';
 import axiosClient from '../../axiosClient';
 import InputWithLabel from '../../components/InputWithLabel/InputWithLabel';
+import Error404 from '../Error404/Error404';
 
 function UpdateUserPage() 
 {
@@ -12,7 +13,8 @@ function UpdateUserPage()
   const [firstName, setFirstName] = useState(user?.first_name);
   const [lastName, setLastName] = useState(user?.last_name);
   const [errors, setErrors] = useState([]);
-
+  const [isWrongRoute, setIsWrongRoute] = useState(false);
+  
   const navigate = useNavigate();
 
   const updateUser = async (event) => {
@@ -24,6 +26,10 @@ function UpdateUserPage()
     await axiosClient.patch(`users/${userId}`, payload)
       .then(() => navigate(-1))
       .catch(errors => {
+        if(errors.response.status === 404)
+        {
+          setIsWrongRoute(true);
+        }
         if(errors.response.status === 422)
         {
             setErrors(errors.response.data.errors);
@@ -34,6 +40,7 @@ function UpdateUserPage()
     if(userId != user?.id) navigate(-1);
   }, [])
 
+  if(isWrongRoute) return <Error404/>;
 
   return (
     <form className="auth">

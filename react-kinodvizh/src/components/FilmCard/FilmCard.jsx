@@ -30,6 +30,7 @@ function FilmCard({film, number})
     }
 
     const toggleUserWhoWantedToWatch = async (func) => {
+        if(!user) navigate('/login');
         const payload = {
             film_id: film.id,
             user_id: user.id,
@@ -41,6 +42,7 @@ function FilmCard({film, number})
     }
 
     const toggleUserWhoWatched = async (func) => {
+        if(!user) navigate('/login');
         const payload = {
             film_id: film.id,
             user_id: user.id,

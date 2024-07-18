@@ -5,6 +5,7 @@ import axiosClient from "../../axiosClient";
 import TextArea from "antd/es/input/TextArea";
 import './UpdateSeriesPage.css';
 import { Select } from "antd";
+import Error404 from "../Error404/Error404";
 
 function UpdateSeriesPage()
 {
@@ -24,6 +25,7 @@ function UpdateSeriesPage()
     const [seasonsCount, setSeasonsCount] = useState(null);
     const [seriesDuration, setSeriesDuration] = useState('')
     const [description, setDescription]= useState('');
+    const [isWrongRoute, setIsWrongRoute] = useState(false);
 
     const navigate = useNavigate();
 
@@ -47,10 +49,15 @@ function UpdateSeriesPage()
         await axiosClient.patch(`admin/series/${seriesId}`, payload)
             .then(() => navigate(-1))
             .catch(errors => {
+                if(errors.response.status === 404)
+                {
+                    setIsWrongRoute(true);
+                }
                 if(errors.response.status === 422)
                 {
                     setErrors(errors.response.data.errors);
                 }
+                window.scrollTo(0,0);
             });
     }
 
@@ -77,6 +84,10 @@ function UpdateSeriesPage()
                 setDescription(data?.description);
             })
             .catch(errors => {
+                if(errors.response.status === 404)
+                {
+                    setIsWrongRoute(true);
+                }
                 if(errors.response.status === 422)
                 {
                     setErrors(errors.response.data.errors);
@@ -88,7 +99,9 @@ function UpdateSeriesPage()
                 setGenresList(data);
             })
             .catch(error => console.log(error));
-    }, [])
+    }, []);
+
+    if(isWrongRoute) return <Error404/>;
 
     return(
         <>

@@ -135,30 +135,29 @@ function Home()
                 : ""
             }   
                 <div className="sort-dropdown">
-                <ConfigProvider
-                    theme={{
-                        token: {
-                            colorPrimary: '#ffc107',
-                        },
-                    }}
-                >
-                    <Dropdown
-                        menu={{
-                            items,
-                            selectable: true,
-                            defaultSelectedKeys: ['1'],
-                            onClick: (item) => {setOrderBy(item.key)}
+                    <ConfigProvider
+                        theme={{
+                            token: {
+                                colorPrimary: '#ffc107',
+                            },
                         }}
                     >
-                        <Typography.Link>
-                            <Space>
-                            <span className='order-by-value'>Sort {orderBy}</span>
-                            <DownOutlined style={{color: 'black'}}/>
-                            </Space>
-                        </Typography.Link>
-                    </Dropdown>
-                </ConfigProvider>
-                    {/* <SelectableDropdown options={items} title={"Sort by:"}/> */}
+                        <Dropdown
+                            menu={{
+                                items,
+                                selectable: true,
+                                defaultSelectedKeys: ['1'],
+                                onClick: (item) => {setOrderBy(item.key)}
+                            }}
+                        >
+                            <Typography.Link>
+                                <Space>
+                                <span className='order-by-value'>Sort {orderBy}</span>
+                                <DownOutlined style={{color: 'black'}}/>
+                                </Space>
+                            </Typography.Link>
+                        </Dropdown>
+                    </ConfigProvider>
                 </div>
             </div>
             {loading && (<span className='mt-5'>Loading...</span>)}

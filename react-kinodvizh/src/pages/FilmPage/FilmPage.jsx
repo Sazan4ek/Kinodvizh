@@ -9,6 +9,7 @@ import { AuthContext } from "../../contexts/AuthContextProvider";
 import ColorfulRating from "../../components/ColorfulRating/ColorfulRating";
 import ReviewsList from "../../components/ReviewsList/ReviewsList";
 import ReviewForm from "../../components/ReviewForm/ReviewForm";
+import Error404 from "../Error404/Error404";
 
 function FilmPage() 
 {
@@ -18,8 +19,9 @@ function FilmPage()
     const [marksCount, setMarksCount] = useState(null);
     const [rating, setRating] = useState(null);
     const [loading, setLoading] = useState(false);
-    const posterUrl = film?.materials.find((material) => material.type === 'poster').uri;
-    const trailerUrl = film?.materials.find((material) => material.type === 'trailer').uri;
+    const [isWrongRoute, setIsWrongRoute] = useState(false);
+    const posterUrl = film?.materials?.find((material) => material.type === 'poster').uri;
+    const trailerUrl = film?.materials?.find((material) => material.type === 'trailer').uri;
     const genres = film?.genres;
 
     const navigate = useNavigate();
@@ -36,6 +38,7 @@ function FilmPage()
     }
 
     const toggleUserWhoWantedToWatch = async (func) => {
+        if(!user) navigate('/login');
         const payload = {
             film_id: film.id,
             user_id: user.id,
@@ -47,6 +50,7 @@ function FilmPage()
     }
 
     const toggleUserWhoWatched = async (func) => {
+        if(!user) navigate('/login');
         const payload = {
             film_id: film.id,
             user_id: user.id,
@@ -78,12 +82,20 @@ function FilmPage()
                 setIsWantedToWatch(data?.users_who_wanted_to_watch?.some((elem)=> elem.id === user?.id));
                 setIsWatched(data?.users_who_watched?.some((elem)=> elem.id === user?.id));
             })
-            .catch(error => {console.log(error); setLoading(false);});
+            .catch(errors => {
+                setLoading(false);
+                if(errors.response.status === 404)
+                {
+                    setIsWrongRoute(true);
+                }
+            });
     }
 
     useEffect(() => {
         getFilm(filmId);
-    }, [])
+    }, []);
+    
+    if(isWrongRoute) return <Error404/>;
 
     if(loading) return <span className='mt-5'>Loading...</span>;
 
@@ -191,7 +203,7 @@ function FilmPage()
                 <div className="right-side">
                     <ColorfulRating rating={rating}/>
                     <span>{marksCount} marks</span>
-                    <span>{reviews.length} reviews</span>
+                    <span>{reviews?.length} reviews</span>
                 </div>  
             </div>
             <ReviewForm 
