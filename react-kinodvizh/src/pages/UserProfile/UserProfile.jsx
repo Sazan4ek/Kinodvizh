@@ -23,7 +23,7 @@ function UserProfile()
       ]
     }
       axiosClient.post(`/users/${userId}`, payload)
-        .then(({data}) => {console.log(data); setCurrentUser(data); setUserReviews(data.reviews)})
+        .then(({data}) => {setCurrentUser(data); setUserReviews(data.reviews)})
         .catch((error) => {
           if(error.response.status === 404)
           {

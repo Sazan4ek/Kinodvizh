@@ -27,12 +27,12 @@ class SeriesFactory extends Factory
             'fees' => fake()->numberBetween(), 
             'ageLimit' => fake()->numberBetween(0, 18),
             'description' => fake()->text(), 
-            'expertMarksCount' => $expertMarksCount = fake()->numberBetween(0, 10000),
-            'marksCount' => $marksCount = fake()->numberBetween(0, 10000),
             'marksSum' => $marksSum = fake()->numberBetween(0, 100000),
             'expertMarksSum' => $expertMarksSum = fake()->numberBetween(0, 100000),
-            'expertRating' => (round($expertMarksSum / $expertMarksCount, 1) > 10 ? 6.9 : round($expertMarksSum / $expertMarksCount, 1)), 
-            'rating' => (round($marksSum / $marksCount, 1) > 10 ? 6.9 : round($marksSum / $marksCount, 1)),
+            'expertMarksCount' => $expertMarksCount = fake()->numberBetween(round($expertMarksSum / 10), $expertMarksSum),
+            'marksCount' => $marksCount = fake()->numberBetween(round($marksSum / 10), $marksSum),
+            'expertRating' => (round($expertMarksSum / $expertMarksCount, 1)),
+            'rating' => (round($marksSum / $marksCount, 1)),
             'seasonsCount' => fake()->randomDigitNotNull(), 
             'seriesDuration' => fake()->time('H:i:s', '02:00:00')
         ];

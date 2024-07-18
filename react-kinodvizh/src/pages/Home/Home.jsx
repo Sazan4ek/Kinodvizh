@@ -160,7 +160,7 @@ function Home()
                     </ConfigProvider>
                 </div>
             </div>
-            {loading && (<span className='mt-5'>Loading...</span>)}
+            {loading && (<span className='mt-5 fs-3'>Loading...</span>)}
             {!loading && (
                 <>
                     <WatchablesList watchables={watchables} type={watchableType}/>

@@ -201,6 +201,7 @@ function SeriesPage()
                     </div>
                 </div>
                 <div className="right-side">
+                    <span>Rating:</span>
                     <ColorfulRating rating={rating}/>
                     <span>{marksCount} marks</span>
                     <span>{reviews.length} reviews</span>
