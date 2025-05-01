@@ -6,6 +6,8 @@ import TextArea from "antd/es/input/TextArea";
 import './UpdateSeriesPage.css';
 import { Select } from "antd";
 import Error404 from "../Error404/Error404";
+import useRequest from "../../hooks/useRequest";
+import Spinner from "../../components/Spinner/Spinner";
 
 function UpdateSeriesPage()
 {
@@ -25,7 +27,6 @@ function UpdateSeriesPage()
     const [seasonsCount, setSeasonsCount] = useState(null);
     const [seriesDuration, setSeriesDuration] = useState('')
     const [description, setDescription]= useState('');
-    const [isWrongRoute, setIsWrongRoute] = useState(false);
 
     const navigate = useNavigate();
 
@@ -61,47 +62,55 @@ function UpdateSeriesPage()
             });
     }
 
-    useEffect(() => {
+    const getSeriesData = async (seriesId) => {
         const payload = {
             with: [
                 'genres'
             ]
         }
-        axiosClient.post(`series/${seriesId}`, payload)
-            .then(({data}) => {
-                setGenresId(data?.genres.map((genre) => genre.id));
-                setName(data?.name);
-                setCountry(data?.country);
-                setDirector(data?.director)
-                setReleaseDate(data?.releaseDate);
-                setScenarioMaker(data?.scenarioMaker);
-                setProducer(data?.producer)
-                setBudget(data?.budget);
-                setFees(data?.fees);
-                setAgeLimit(data?.ageLimit)
-                setSeasonsCount(data?.seasonsCount);
-                setSeriesDuration(data?.seriesDuration);
-                setDescription(data?.description);
-            })
-            .catch(errors => {
-                if(errors.response.status === 404)
-                {
-                    setIsWrongRoute(true);
-                }
-                if(errors.response.status === 422)
-                {
-                    setErrors(errors.response.data.errors);
-                }
-                window.scrollTo(0,0);
-            });
+        
+        return (
+            axiosClient.post(`series/${seriesId}`, payload)
+                .then(({data}) => {
+                    setGenresId(data?.genres.map((genre) => genre.id));
+                    setName(data?.name);
+                    setCountry(data?.country);
+                    setDirector(data?.director)
+                    setReleaseDate(data?.releaseDate);
+                    setScenarioMaker(data?.scenarioMaker);
+                    setProducer(data?.producer)
+                    setBudget(data?.budget);
+                    setFees(data?.fees);
+                    setAgeLimit(data?.ageLimit)
+                    setSeasonsCount(data?.seasonsCount);
+                    setSeriesDuration(data?.seriesDuration);
+                    setDescription(data?.description);
+                })
+        );
+    };
 
-            axiosClient.get(`/genres`).then(({data}) => {
-                setGenresList(data);
-            })
-            .catch(error => console.log(error));
-    }, []);
+    const getGenres = async () => {
+        return axiosClient.get(`/genres`).then(({data}) => {
+            setGenresList(data);
+        });
+    };
 
-    if(isWrongRoute) return <Error404/>;
+    const [seriesLoading, seriesError] = useRequest(
+        getSeriesData,
+        [],
+        seriesId,
+    );
+
+    const [genresLoading, genresError] = useRequest(
+        getGenres,
+        [],
+    );
+
+    if(seriesError && seriesError.response.status === 422) setErrors(seriesError.response.data.errors);
+
+    if(seriesError && seriesError.response.status === 404) return <Error404 />;
+    
+    if(seriesLoading || genresLoading) return <Spinner />;
 
     return(
         <>

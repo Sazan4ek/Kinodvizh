@@ -49,8 +49,11 @@
     -webkit-box-shadow: 0 0 20px white;
     box-shadow: 2px 2px 5px black;
 }
-.countries-dropdown-container {
-    font-size: 20px
+.dropdown-container {
+    width: 100%;
+    padding-left: 5vw;
+    font-size: 20px;
+    justify-items: start;
 }
 .years-range-container {
     width: 100%;

@@ -8,61 +8,61 @@ import { DownOutlined } from '@ant-design/icons';
 import { Dropdown, Space, Typography } from 'antd';
 import SideBar from '../../components/SideBar/SideBar';
 import Pagination from '../../components/Pagination/Pagination';
-import useQuery from '../../hooks/useQuery';
 const { Search } = Input;
+import useWatchableFilters from '../../hooks/useWatchableFilters';
+import useRequest from '../../hooks/useRequest';
 
 function Home()
 {
-    let query = useQuery();
-    const defaultWatchableType = query.get("watchable") ?? null;
+    const actualYear = new Date().getFullYear();
+    const { filterValues, setFilterValue } = 
+        useWatchableFilters({
+            watchableType: "films",
+            yearFrom: 1900,
+            yearUntil: actualYear,
+            rateFrom: 0,
+            rateUntil: 10,
+            orderBy: "in order",
+            page: 1,
+        });
+
+    const [searchText, setSearchText] = useState(filterValues.q);
     const [watchables, setWatchables] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [watchableType, setWatchableType] = useState(defaultWatchableType ? defaultWatchableType : 'films');
-    const [country, setCountry] = useState(null);
-    const [yearFrom, setYearFrom] = useState(null);
-    const [yearUntil, setYearUntil] = useState(null);
-    const [rateFrom, setRateFrom] = useState(0);
-    const [rateUntil, setRateUntil] = useState(10);
-    const [searchText, setSearchText] = useState('');
-    const [genre, setGenre] = useState(null);
-    const [orderBy, setOrderBy] = useState('in order');
     const [favourites, setFavourites] = useState(false);
     const [watched, setWatched] = useState(false);
 
     const { user } = useContext(AuthContext);
 
-    const getWatchables = (watchableType, url) => {
-        setLoading(true);
+    const getWatchables = async (watchableType, url) => {
         const payload = {
-            country, 
-            yearFrom, 
-            yearUntil, 
-            rateFrom,
-            rateUntil,
-            genre,
-            searchText,
-            orderBy,
+            ...filterValues,
             favourites,
             watched,
-            userId: user?.id
-        }
-
+            userId: user?.id,
+            params: {
+                page: filterValues.page
+            }
+        };
+        
         if(!url) url = `/${watchableType}`;
-
-        axiosClient.post(url, payload).then(({data}) => {
-            setLoading(false);
+        
+        return axiosClient.post(url, payload).then(({data}) => {
             setWatchables(data);
-        })
-        .catch((error) => {
-            console.log(error);
-            setLoading(false);  
         });
     }
 
-    useEffect(() => {
-        getWatchables(watchableType);
-    }, [country, yearFrom, yearUntil, rateFrom, rateUntil, watchableType, genre, orderBy, favourites, watched]);
+    const [loading, error] = useRequest(
+        getWatchables, 
+        [
+            JSON.stringify(filterValues),
+            favourites, 
+            watched
+        ],
+        filterValues.watchableType
+    );
 
+    console.log(watchables);
+    
     const items=[
         {
             key: 'in order',
@@ -88,82 +88,54 @@ function Home()
 
     return (
         <>
-            <SideBar props={{
-                watchableType, 
-                setWatchableType,
-                setCountry, 
-                setGenre,
-                setRateFrom, 
-                setRateUntil,  
-                setYearFrom, 
-                setYearUntil
-            }}/>
-            <ConfigProvider
-                theme={{
-                    token: {
-                        colorPrimary: '#ffc107',
-                    },
+            <SideBar />
+            <Search
+                placeholder="input search text"
+                enterButton="Search"
+                size="large"
+                allowClear
+                loading={loading && searchText}
+                onClear={() => setFilterValue("q", null)}
+                onChange={(event) => setSearchText(event.target.value)}
+                value={searchText}
+                onSearch={(value) => {
+                    setFilterValue("q", (value === "" ? null : value));
                 }}
-            >
-                <Search
-                    placeholder="input search text"
-                    enterButton="Search"
-                    size="large"
-                    onChange={(event) => setSearchText(event.target.value)}
-                    value={searchText}
-                    onSearch={() => {getWatchables(watchableType);}}
-                    style={{
-                        width: '25vw',
-                    }}
-                />
-            </ConfigProvider>
+                style={{
+                    width: '25vw',
+                    zIndex: 0,
+                }}
+            />
             <div className="on-top-row">
-
-            {user ? 
-                <div className="users-preferences-buttons">
-                    <ConfigProvider
-                        theme={{
-                            token: {
-                                colorPrimary: '#ffc107',
-                            },
-                        }}
-                    >
+                {user ? 
+                    <div className="users-preferences-buttons">
                         <Checkbox style={{fontWeight: 'bold'}} onChange={(event) => setFavourites(event.target.checked)}>favourites</Checkbox>
                         <Checkbox style={{fontWeight: 'bold'}} onChange={(event) => setWatched(event.target.checked)}>watched ones</Checkbox>
-                    </ConfigProvider>
-                </div> 
-                : ""
-            }   
+                    </div> 
+                    : ""
+                }   
                 <div className="sort-dropdown">
-                    <ConfigProvider
-                        theme={{
-                            token: {
-                                colorPrimary: '#ffc107',
-                            },
+                    <Dropdown
+                        menu={{
+                            items,
+                            selectable: true,
+                            defaultSelectedKeys: [filterValues.orderBy],
+                            onClick: (item) => {setFilterValue("orderBy", item.key)}
                         }}
                     >
-                        <Dropdown
-                            menu={{
-                                items,
-                                selectable: true,
-                                defaultSelectedKeys: ['1'],
-                                onClick: (item) => {setOrderBy(item.key)}
-                            }}
-                        >
-                            <Typography.Link>
-                                <Space>
-                                <span className='order-by-value'>Sort {orderBy}</span>
-                                <DownOutlined style={{color: 'black'}}/>
-                                </Space>
-                            </Typography.Link>
-                        </Dropdown>
-                    </ConfigProvider>
+                        <Typography.Link>
+                            <Space>
+                                <span className='order-by-value'>Sort {filterValues.orderBy ?? items[0].label}</span>
+                            <DownOutlined style={{color: 'black'}}/>
+                            </Space>
+                        </Typography.Link>
+                    </Dropdown>
                 </div>
             </div>
             {loading && (<span className='mt-5 fs-3'>Loading...</span>)}
             {!loading && (
                 <>
-                    <WatchablesList watchables={watchables} type={watchableType}/>
+                    <WatchablesList watchables={watchables} type={filterValues.watchableType}/>
                     <Pagination links={watchables.links} getWatchables={getWatchables}/>
                 </>
             )}

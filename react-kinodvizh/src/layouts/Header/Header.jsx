@@ -1,6 +1,6 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import './Header.css'
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContextProvider";
 import { RiUserLine } from "react-icons/ri";
 
@@ -8,15 +8,18 @@ function Header()
 {
     const { user, logout } = useContext(AuthContext);
 
+    const location = useLocation();
+    console.log(location);
+
     return (
         <header className="header-container">
             <div className="logo-container">
                 <img src="/img/kinodvizh-high-resolution-logo-transparent.png" alt="logo-image" height={'100%'}/>
             </div>
             <nav className="nav-bar">
-                <NavLink className="nav-item" to={'/'}>Home</NavLink>
-                <NavLink className="nav-item" to={'/?watchable=films'}>Films</NavLink>
-                <NavLink className="nav-item" to={'/?watchable=series'}>Series</NavLink>
+                <NavLink className="nav-item" to={{ pathname: '/', search: "watchableType=films" }}>Home</NavLink>
+                <NavLink className="nav-item" to={{ pathname: '/', search: "watchableType=films" }}>Films</NavLink>
+                <NavLink className="nav-item" to={{ pathname: '/', search: "watchableType=series" }}>Series</NavLink>
             </nav>
             <div className="user-panel">
                 {user ? (

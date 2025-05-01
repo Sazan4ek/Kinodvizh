@@ -25,7 +25,6 @@ class FilmController extends Controller
     public function destroy(Film $film)
     {
         $film->materials()->delete();
-        $film->genres()->delete();
         $film->reviews()->delete();
         $film->delete();
 
@@ -44,7 +43,7 @@ class FilmController extends Controller
 
     public function toggleUserWhoWatched(Request $request)
     {
-        $film = Film::find($request->film_id);
+        $film = Film::findOrFail($request->film_id);
         $userId = $request->user_id;
         $func = $request->func;
         $film->usersWhoWatched()->$func($userId);

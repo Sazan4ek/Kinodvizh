@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import InputWithLabel from "../../components/InputWithLabel/InputWithLabel";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosClient from "../../axiosClient";
@@ -6,6 +6,8 @@ import TextArea from "antd/es/input/TextArea";
 import './UpdateFilmPage.css';
 import { Select } from "antd";
 import Error404 from "../Error404/Error404";
+import useRequest from "../../hooks/useRequest";
+import Spinner from "../../components/Spinner/Spinner";
 
 function UpdateFilmPage()
 {
@@ -24,7 +26,6 @@ function UpdateFilmPage()
     const [ageLimit, setAgeLimit]= useState(null);
     const [duration, setDuration]= useState('');
     const [description, setDescription]= useState('');
-    const [isWrongRoute, setIsWrongRoute] = useState(false);
 
     const navigate = useNavigate();
 
@@ -59,47 +60,55 @@ function UpdateFilmPage()
             });
     }
 
-    useEffect(() => {
+    const getFilmData = async (filmId) => {
         const payload = {
             with: [
                 'genres'
             ]
         }
-        axiosClient.post(`films/${filmId}`, payload)
-            .then(({data}) => {
-                setGenresId(data?.genres.map((genre) => genre.id));
-                setName(data?.name);
-                setCountry(data?.country);
-                setDirector(data?.director)
-                setReleaseDate(data?.releaseDate);
-                setScenarioMaker(data?.scenarioMaker);
-                setProducer(data?.producer)
-                setBudget(data?.budget);
-                setFees(data?.fees);
-                setAgeLimit(data?.ageLimit)
-                setDuration(data?.duration)
-                setDescription(data?.description);
-            })
-            .catch(errors => {
-                if(errors.response.status === 404)
-                {
-                    setIsWrongRoute(true);
-                }
-                if(errors.response.status === 422)
-                {
-                    setErrors(errors.response.data.errors);
-                }
-            });
+        return (
+            axiosClient.post(`films/${filmId}`, payload)
+                .then(({data}) => {
+                    setGenresId(data?.genres.map((genre) => genre.id));
+                    setName(data?.name);
+                    setCountry(data?.country);
+                    setDirector(data?.director)
+                    setReleaseDate(data?.releaseDate);
+                    setScenarioMaker(data?.scenarioMaker);
+                    setProducer(data?.producer)
+                    setBudget(data?.budget);
+                    setFees(data?.fees);
+                    setAgeLimit(data?.ageLimit)
+                    setDuration(data?.duration)
+                    setDescription(data?.description);
+                })
+        );
+    };
 
-            axiosClient.get(`/genres`).then(({data}) => {
-                setGenresList(data);
-            })
-            .catch(error => console.log(error));
-    }, [])
+    const getGenres = async () => {
+        return axiosClient.get(`/genres`).then(({data}) => {
+            setGenresList(data);
+        });
+    };
 
-    if(isWrongRoute) return <Error404/>;
+    const [filmLoading, filmError] = useRequest(
+        getFilmData,
+        [],
+        filmId,
+    );
 
-    return(
+    const [genresLoading, genresError] = useRequest(
+        getGenres,
+        [],
+    );
+
+    if(filmError && filmError.response.status === 422) setErrors(filmError.response.data.errors);
+
+    if(filmError && filmError.response.status === 404) return <Error404 />;
+    
+    if(filmLoading || genresLoading) return <Spinner />;
+
+    return (
         <>
             <div className="form-container">
                 <h1 className='title'>Update film info</h1>

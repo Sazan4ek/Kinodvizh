@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import './ReviewCard.css';
-import { LuUser2 } from "react-icons/lu";
+import { LuUserRound } from "react-icons/lu";
 import { Rate } from 'antd';
 import { BiLike } from "react-icons/bi";
 import { BiSolidLike } from "react-icons/bi";
@@ -56,7 +56,7 @@ function ReviewCard({review})
         <div className="review-card">
             <div className="up-row">
                 <Link to={`/users/${writer?.id}/profile`} className="d-flex gap-2 without-underline">
-                    <LuUser2 className="writer-icon"/>
+                    <LuUserRound className="writer-icon"/>
                     <span className="writer-fullName">
                         {writer?.first_name + ' '}
                         {writer?.last_name}

@@ -25,7 +25,6 @@ class SeriesController extends Controller
     public function destroy(Series $series)
     {
         $series->materials()->delete();
-        $series->genres()->delete();
         $series->reviews()->delete();
         $series->delete();
 

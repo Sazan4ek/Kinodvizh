@@ -10,6 +10,8 @@ import ColorfulRating from "../../components/ColorfulRating/ColorfulRating";
 import ReviewsList from "../../components/ReviewsList/ReviewsList";
 import ReviewForm from "../../components/ReviewForm/ReviewForm";
 import Error404 from "../Error404/Error404";
+import Spinner from "../../components/Spinner/Spinner";
+import useRequest from "../../hooks/useRequest";
 
 function FilmPage() 
 {
@@ -18,8 +20,6 @@ function FilmPage()
     const [reviews, setReviews] = useState([])
     const [marksCount, setMarksCount] = useState(null);
     const [rating, setRating] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [isWrongRoute, setIsWrongRoute] = useState(false);
     const posterUrl = film?.materials?.find((material) => material.type === 'poster').uri;
     const trailerUrl = film?.materials?.find((material) => material.type === 'trailer').uri;
     const genres = film?.genres;
@@ -62,7 +62,6 @@ function FilmPage()
     }
 
     const getFilm = async (filmId) => {
-        setLoading(true);
         const payload = {
             with: [
                 'reviews.user',
@@ -72,32 +71,28 @@ function FilmPage()
                 'genres'
             ]
         }
-        await axiosClient.post(`films/${filmId}`, payload)
-            .then(({data}) => {
-                setLoading(false); 
-                setFilm(data); 
-                setMarksCount(data.marksCount);
-                setRating(data.rating); 
-                setReviews(data.reviews);
-                setIsWantedToWatch(data?.users_who_wanted_to_watch?.some((elem)=> elem.id === user?.id));
-                setIsWatched(data?.users_who_watched?.some((elem)=> elem.id === user?.id));
-            })
-            .catch(errors => {
-                setLoading(false);
-                if(errors.response.status === 404)
-                {
-                    setIsWrongRoute(true);
-                }
-            });
+        return (
+            axiosClient.post(`films/${filmId}`, payload)
+                .then(({data}) => {
+                    setFilm(data); 
+                    setMarksCount(data.marksCount);
+                    setRating(data.rating); 
+                    setReviews(data.reviews);
+                    setIsWantedToWatch(data?.users_who_wanted_to_watch?.some((elem)=> elem.id === user?.id));
+                    setIsWatched(data?.users_who_watched?.some((elem)=> elem.id === user?.id));
+                })
+        );
     }
 
-    useEffect(() => {
-        getFilm(filmId);
-    }, []);
+    const [loading, error] = useRequest(
+        getFilm,
+        [],
+        filmId
+    );
     
-    if(isWrongRoute) return <Error404/>;
+    if(error && error.response.status === 404) return <Error404 />;
 
-    if(loading) return <span className='mt-5'>Loading...</span>;
+    if(loading) return <Spinner />;
 
     return (
         <>

@@ -83,7 +83,7 @@ class Series extends Model
         $rateUntil = $filterData->rateUntil ?? 10;
         $sqlQuery->whereBetween('rating', [$rateFrom, $rateUntil]);
 
-        $searchText = $filterData->searchText;
+        $searchText = $filterData->q;
         if($searchText !== "") $sqlQuery->where('name', 'like', "%$searchText%");
 
         $userId = $filterData->userId;
@@ -107,6 +107,15 @@ class Series extends Model
         else if($orderBy === 'by name') $sqlQuery->orderBy('name', 'asc');
 
         $filteredSeries = $sqlQuery->paginate(20);
+
+        if($filteredSeries->lastPage() < $filterData->page)
+        {
+            $filteredSeries = $sqlQuery->paginate(20, ['*'], 'page', $filteredSeries->lastPage());
+        }
+        else if($filterData->page < 1) 
+        {
+            $filteredSeries = $sqlQuery->paginate(20, ['*'], 'page', 1);
+        }
         return $filteredSeries;
     }
 

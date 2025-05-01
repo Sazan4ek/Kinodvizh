@@ -83,7 +83,7 @@ class Film extends Model
         $rateUntil = $filterData->rateUntil ?? 10;
         $sqlQuery->whereBetween('rating', [$rateFrom, $rateUntil]);
 
-        $searchText = $filterData->searchText;
+        $searchText = $filterData->q;
         if($searchText !== "" && $searchText !== null) $sqlQuery->where('name', 'like', "%$searchText%");
 
         $userId = $filterData->userId;
@@ -108,6 +108,17 @@ class Film extends Model
         else if($orderBy === 'by name') $sqlQuery->orderBy('name', 'asc');
 
         $filteredFilms = $sqlQuery->paginate(20);
+
+        if($filteredFilms->lastPage() < $filterData->page)
+        {
+            $filteredFilms = $sqlQuery->paginate(20, ['*'], 'page', $filteredFilms->lastPage());
+        }
+        else if($filterData->page < 1) 
+        {
+            $filteredFilms = $sqlQuery->paginate(20, ['*'], 'page', 1);
+        }
+        
+
         return $filteredFilms;
     }
 

@@ -2,24 +2,27 @@ import { useEffect, useState } from 'react';
 import './SideBar.css';
 import axiosClient from '../../axiosClient';
 import { Select, Slider } from 'antd';
+import useWatchableFilters from '../../hooks/useWatchableFilters';
 
-function SideBar({props}) 
+function SideBar() 
 {
     const actualYear = new Date().getFullYear();
-    const {
-        watchableType, 
-        setWatchableType,
-        setCountry, 
-        setGenre,
-        setRateFrom, 
-        setRateUntil,  
-        setYearFrom, 
-        setYearUntil
-    } = {...props};
+    const { filterValues, setFilterValue, setMultipleFilterValues } = 
+        useWatchableFilters({
+            watchableType: "films",
+            yearFrom: 1900,
+            yearUntil: actualYear,
+            rateFrom: 0,
+            rateUntil: 10,
+            orderBy: "in order",
+        });
+    
+    console.log(filterValues.watchableType);
+
     const [countriesList, setCountriesList] = useState([]);
     const [genresList, setGenresList] = useState([]);
     useEffect(() => {
-        axiosClient.get(`/${watchableType}/countries`).then(({data}) => {
+        axiosClient.get(`/${filterValues.watchableType}/countries`).then(({data}) => {
             setCountriesList(data);
         })
         .catch(error => console.log(error));
@@ -28,36 +31,38 @@ function SideBar({props})
             setGenresList(data);
         })
         .catch(error => console.log(error));
-    }, [watchableType]);
+    }, [filterValues.watchableType]);
+
     return (
         <div className="sidebar">
             <div className="slogan">
-                Kinodvizh - grab your popcorn and get going!
+                Kinodvizh - grab your popcorn and keep going!
             </div>
             <div className="filter-panel">
                 <div className="watchable-type-switch">
                     <button 
-                        onClick={watchableType === 'films' ? null : () => setWatchableType('films')} 
-                        className={(watchableType === 'films'? 'active-btn' : '') + ' watchable-type-btn'}
+                        onClick={filterValues.watchableType === 'films' ? null : () => setFilterValue('watchableType', 'films')} 
+                        className={(filterValues.watchableType === 'films'? 'active-btn' : '') + ' watchable-type-btn'}
                     >
                         Films
                     </button>
 
                     <button 
-                        onClick={watchableType === 'series' ? null : () => setWatchableType('series')} 
-                        className={(watchableType === 'series'? 'active-btn' : '') + ' watchable-type-btn'}
+                        onClick={filterValues.watchableType === 'series' ? null : () => setFilterValue('watchableType', 'series')} 
+                        className={(filterValues.watchableType === 'series'? 'active-btn' : '') + ' watchable-type-btn'}
                     >
                         Series
                     </button>
                 </div>
-                <div className="countries-dropdown-container">
+                <div className="dropdown-container">
                     <span className='country'>Country: </span>
                     <Select
                         showSearch
                         allowClear
                         placeholder="Select the country"
                         optionFilterProp="label"
-                        onChange={(country) => setCountry(country)}
+                        value={filterValues.country}
+                        onChange={(country) => setFilterValue('country', country)}
                         options={Object.values(countriesList)?.map((country) => { 
                             return {
                                 value: country, 
@@ -65,19 +70,19 @@ function SideBar({props})
                             };
                         })}
                         style={{
-                            width: 'fit-content', 
-                            minWidth: '40px',
+                            width: '7vw'
                         }}
                     />
                 </div>
-                <div className="countries-dropdown-container">
+                <div className="dropdown-container">
                     <span className='genre'>Genre: </span>
                     <Select
                         showSearch
                         allowClear
                         placeholder="Select the genre"
                         optionFilterProp="label"
-                        onChange={(genre) => setGenre(genre)}
+                        value={filterValues.genre}
+                        onChange={(genre) => setFilterValue('genre', genre)}
                         options={genresList?.map((genre) => { 
                             return {
                                 value: genre.name, 
@@ -85,8 +90,7 @@ function SideBar({props})
                             };
                         })}
                         style={{
-                            width: 'fit-content', 
-                            minWidth: '40px'
+                            width: '7vw'
                         }}
                     />
                 </div>
@@ -98,8 +102,13 @@ function SideBar({props})
                         range 
                         min={1900}
                         max={actualYear}
-                        defaultValue={[1900, actualYear]} 
-                        onChangeComplete={([value1, value2]) => {setYearFrom(value1); setYearUntil(value2);}}
+                        defaultValue={[filterValues.yearFrom, filterValues.yearUntil]}
+                        onChangeComplete={([yearFrom, yearUntil]) => {
+                            setMultipleFilterValues({
+                                yearFrom,
+                                yearUntil,
+                            });
+                        }}
                         style={{ width: '70%'}}
                         marks={{ 1900: '1900 year', [actualYear]: `${actualYear}    year`}}
                     />
@@ -112,9 +121,14 @@ function SideBar({props})
                         range 
                         min={0}
                         max={10}
-                        defaultValue={[0, 10]} 
+                        defaultValue={[filterValues.rateFrom, filterValues.rateUntil]} 
                         step={0.1}
-                        onChangeComplete={([value1, value2]) => {setRateFrom(value1); setRateUntil(value2);}}
+                        onChangeComplete={([rateFrom, rateUntil]) => {
+                            setMultipleFilterValues({
+                                rateFrom,
+                                rateUntil,
+                            });
+                        }}
                         style={{ width: '70%'}}
                         marks={{ 0: '0', 10: '10'}}
                     />

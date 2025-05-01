@@ -10,6 +10,8 @@ import ColorfulRating from "../../components/ColorfulRating/ColorfulRating";
 import ReviewsList from "../../components/ReviewsList/ReviewsList";
 import ReviewForm from "../../components/ReviewForm/ReviewForm";
 import Error404 from "../Error404/Error404";
+import useRequest from "../../hooks/useRequest";
+import Spinner from "../../components/Spinner/Spinner";
 
 function SeriesPage() 
 {
@@ -18,8 +20,6 @@ function SeriesPage()
     const [reviews, setReviews] = useState([])
     const [marksCount, setMarksCount] = useState(null);
     const [rating, setRating] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [isWrongRoute, setIsWrongRoute] = useState(false);
     const posterUrl = series?.materials?.find((material) => material.type === 'poster').uri;
     const trailerUrl = series?.materials?.find((material) => material.type === 'trailer').uri;
     const genres = series?.genres;
@@ -62,7 +62,6 @@ function SeriesPage()
     }
 
     const getSeries = async (seriesId) => {
-        setLoading(true);
         const payload = {
             with: [
                 'reviews.user',
@@ -72,32 +71,28 @@ function SeriesPage()
                 'genres'
             ]
         }
-        await axiosClient.post(`series/${seriesId}`, payload)
-            .then(({data}) => {
-                setLoading(false); 
-                setSeries(data); 
-                setMarksCount(data.marksCount);
-                setRating(data.rating); 
-                setReviews(data.reviews);
-                setIsWantedToWatch(series?.users_who_wanted_to_watch?.some((elem)=> elem.id === user?.id));
-                setIsWatched(series?.users_who_watched?.some((elem)=> elem.id === user?.id));
-            })
-            .catch(errors => {
-                setLoading(false);
-                if(errors.response.status === 404)
-                {
-                    setIsWrongRoute(true);
-                }
-            });
+        return (
+            axiosClient.post(`series/${seriesId}`, payload)
+                .then(({data}) => { 
+                    setSeries(data); 
+                    setMarksCount(data.marksCount);
+                    setRating(data.rating); 
+                    setReviews(data.reviews);
+                    setIsWantedToWatch(series?.users_who_wanted_to_watch?.some((elem)=> elem.id === user?.id));
+                    setIsWatched(series?.users_who_watched?.some((elem)=> elem.id === user?.id));
+                })
+        );
     }
 
-    useEffect(() => {
-        getSeries(seriesId)
-    }, [])
+    const [loading, error] = useRequest(
+        getSeries,
+        [],
+        seriesId
+    );
 
-    if(isWrongRoute) return <Error404/>;
+    if(error && error.response.status === 404) return <Error404/>;
 
-    if(loading) return <span className='mt-5'>Loading...</span>;
+    if(loading) return <Spinner />;
 
     return (
         <>

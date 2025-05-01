@@ -13,9 +13,9 @@ function AuthContextProvider({children})
     const getUser = async () => {
         try {
             await axiosClient.get('/user')
-            .then(({data}) => {setUser(data); setUserRole(data.role.name)})
+            .then(({data}) => {setUser(data); setUserRole(data?.role.name)});
         }
-        catch(error) {}
+        catch(error) { console.log(error); }
     }
 
     const register = async (payload, setErrors) => {
@@ -61,7 +61,7 @@ function AuthContextProvider({children})
 
     useEffect(() => {
         if(!user && localStorage.getItem('IS_LOGGED_IN') === 'true') getUser();
-    },[]);
+    }, []);
 
     return (
         <AuthContext.Provider value={{

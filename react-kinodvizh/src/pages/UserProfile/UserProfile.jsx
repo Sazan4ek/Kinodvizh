@@ -1,38 +1,45 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import './UserProfile.css';
 import { AuthContext } from '../../contexts/AuthContextProvider';
 import { useNavigate, useParams } from 'react-router-dom';
 import axiosClient from '../../axiosClient';
 import Error404 from '../Error404/Error404';
 import ReviewsList from '../../components/ReviewsList/ReviewsList';
+import useRequest from '../../hooks/useRequest';
+import Spinner from '../../components/Spinner/Spinner';
+
 
 function UserProfile() 
 {
   const { userId } = useParams();
   const { user } = useContext(AuthContext);
   const [currentUser, setCurrentUser] = useState(null);
-  const [isWrongRoute, setIsWrongRoute] = useState(false);
   const [userReviews, setUserReviews] = useState([]);
 
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const getUserWithReviews = async (userId) => {
     const payload = {
       with: [
         'reviews.user'
       ]
-    }
+    };
+
+    return (
       axiosClient.post(`/users/${userId}`, payload)
         .then(({data}) => {setCurrentUser(data); setUserReviews(data.reviews)})
-        .catch((error) => {
-          if(error.response.status === 404)
-          {
-            setIsWrongRoute(true);
-          }
-        })
-  }, [])
+    );
+  }
 
-  if(isWrongRoute) return <Error404/>;
+  const [loading, error] = useRequest(
+    getUserWithReviews,
+    [],
+    userId,
+  );
+
+  if(error && error.response.status === 404) return <Error404/>;
+
+  if(loading) return <Spinner />
 
   return (
     <>

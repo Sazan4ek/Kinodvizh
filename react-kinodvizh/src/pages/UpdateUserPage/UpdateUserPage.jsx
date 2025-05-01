@@ -37,8 +37,8 @@ function UpdateUserPage()
       })
   }
   useEffect(() => {
-    if(userId != user?.id) navigate(-1);
-  }, [])
+    if(!user || userId != user?.id) navigate(-1);
+  }, [userId, user])
 
   if(isWrongRoute) return <Error404/>;
 
