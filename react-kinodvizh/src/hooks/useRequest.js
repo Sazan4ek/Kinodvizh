@@ -17,7 +17,7 @@ const useRequest = (request, dependsOn, ...args) => {
         // }, 5000);
 
         request(...args)
-            .catch((error) => setError(error))
+            .catch((error) => { console.log(error); setError(error); })
             .finally(() => setLoading(false));
 
 

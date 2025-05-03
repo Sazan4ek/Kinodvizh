@@ -1,15 +1,12 @@
-import { useContext, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthContextProvider";
+import { useAuth } from "../contexts/AuthContextProvider";
 
 function AuthLayout()
 {
-    const { user } = useContext(AuthContext);
+    const { user, userLoading } = useAuth();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if(!user) navigate('login')
-    })
+    if(!userLoading && !user) navigate('login')
 
     return <Outlet/>;
 }

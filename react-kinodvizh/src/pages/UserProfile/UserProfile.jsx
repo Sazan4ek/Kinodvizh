@@ -1,6 +1,6 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import './UserProfile.css';
-import { AuthContext } from '../../contexts/AuthContextProvider';
+import { useAuth } from '../../contexts/AuthContextProvider';
 import { useNavigate, useParams } from 'react-router-dom';
 import axiosClient from '../../axiosClient';
 import Error404 from '../Error404/Error404';
@@ -12,7 +12,7 @@ import Spinner from '../../components/Spinner/Spinner';
 function UserProfile() 
 {
   const { userId } = useParams();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [currentUser, setCurrentUser] = useState(null);
   const [userReviews, setUserReviews] = useState([]);
 
@@ -33,7 +33,7 @@ function UserProfile()
 
   const [loading, error] = useRequest(
     getUserWithReviews,
-    [],
+    [userId],
     userId,
   );
 

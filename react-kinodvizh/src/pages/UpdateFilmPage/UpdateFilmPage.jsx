@@ -14,18 +14,20 @@ function UpdateFilmPage()
     const { filmId } = useParams();
     const [genresId, setGenresId] = useState([]);
     const [genresList, setGenresList] = useState([]);
+    const [film, setFilm] = useState({
+        name: '',
+        country: '',
+        director: '',
+        releaseDate: '', 
+        scenarioMaker: '',
+        producer: '',
+        budget: null,
+        fees: null,
+        ageLimit: null,
+        duration: '',
+        description: ''
+    });
     const [errors, setErrors] = useState([]);
-    const [name, setName] = useState('');
-    const [country, setCountry] = useState('');
-    const [director, setDirector] = useState('');
-    const [releaseDate, setReleaseDate] = useState('');
-    const [scenarioMaker, setScenarioMaker] = useState('');
-    const [producer, setProducer] = useState('');
-    const [budget, setBudget]  = useState(null);
-    const [fees, setFees]= useState(null);
-    const [ageLimit, setAgeLimit]= useState(null);
-    const [duration, setDuration]= useState('');
-    const [description, setDescription]= useState('');
 
     const navigate = useNavigate();
 
@@ -33,18 +35,8 @@ function UpdateFilmPage()
         event.preventDefault();
         const payload = {
             genresId,
-            name,
-            country,
-            director,
-            producer,
-            releaseDate,
-            scenarioMaker,
-            budget,
-            fees,
-            ageLimit,
-            duration,
-            description
-        }
+            ...film,
+        };
         await axiosClient.patch(`admin/films/${filmId}`, payload)
             .then(() => navigate(-1))
             .catch(errors => {
@@ -70,18 +62,21 @@ function UpdateFilmPage()
             axiosClient.post(`films/${filmId}`, payload)
                 .then(({data}) => {
                     setGenresId(data?.genres.map((genre) => genre.id));
-                    setName(data?.name);
-                    setCountry(data?.country);
-                    setDirector(data?.director)
-                    setReleaseDate(data?.releaseDate);
-                    setScenarioMaker(data?.scenarioMaker);
-                    setProducer(data?.producer)
-                    setBudget(data?.budget);
-                    setFees(data?.fees);
-                    setAgeLimit(data?.ageLimit)
-                    setDuration(data?.duration)
-                    setDescription(data?.description);
-                })
+                    setFilm({
+                        name: data?.name,
+                        country: data?.country,
+                        director: data?.director,
+                        releaseDate: data?.releaseDate,
+                        scenarioMaker: data?.scenarioMaker,
+                        producer: data?.producer,
+                        budget: data?.budget,
+                        fees: data?.fees,
+                        ageLimit: data?.ageLimit,
+                        duration: data?.duration,
+                        description: data?.description,
+                    });
+                }
+            )
         );
     };
 
@@ -117,8 +112,8 @@ function UpdateFilmPage()
                         label={'Film name'}
                         placeholder={'Enter the film name'} 
                         className={'form-control'} 
-                        value={name}
-                        onChange={event => setName(event.target.value)}
+                        value={film.name}
+                        onChange={event => setFilm({ ...film, name: event.target.value })}
                         error={errors.name ? errors.name[0] : null}
                     />
                     <label>Genres</label>
@@ -145,40 +140,40 @@ function UpdateFilmPage()
                         label={'Country'}
                         placeholder={'Enter the country'} 
                         className={'form-control'} 
-                        value={country}
-                        onChange={event => setCountry(event.target.value)}
+                        value={film.country}
+                        onChange={event => setFilm({ ...film, country: event.target.value })}
                         error={errors.country ? errors.country[0] : null}
                     />
                     <InputWithLabel  
                         label={'Film director'}
                         placeholder={'Enter the film director'} 
                         className={'form-control'} 
-                        value={director}
-                        onChange={event => setDirector(event.target.value)}
+                        value={film.director}
+                        onChange={event => setFilm({ ...film, director: event.target.value })}
                         error={errors.director ? errors.director[0] : null}
                     />
                     <InputWithLabel  
                         label={'Film producer'}
                         placeholder={'Enter the film producer'} 
                         className={'form-control'} 
-                        value={producer}
-                        onChange={event => setProducer(event.target.value)}
+                        value={film.producer}
+                        onChange={event => setFilm({ ...film, producer: event.target.value })}
                         error={errors.producer ? errors.producer[0] : null}
                     />
                     <InputWithLabel  
                         label={'Scenario maker'}
                         placeholder={'Enter the scenario maker'} 
                         className={'form-control'} 
-                        value={scenarioMaker}
-                        onChange={event => setScenarioMaker(event.target.value)}
+                        value={film.scenarioMaker}
+                        onChange={event => setFilm({ ...film, scenarioMaker: event.target.value })}
                         error={errors.scenarioMaker ? errors.scenarioMaker[0] : null}
                     />
                     <InputWithLabel  
                         label={'Release date'}
                         type={'date'}
                         className={'form-control'} 
-                        value={releaseDate}
-                        onChange={event => setReleaseDate(event.target.value)}
+                        value={film.releaseDate}
+                        onChange={event => setFilm({ ...film, releaseDate: event.target.value })}
                         error={errors.releaseDate ? errors.releaseDate[0] : null}
                     />
                     <InputWithLabel  
@@ -187,8 +182,8 @@ function UpdateFilmPage()
                         label={'Budget ($)'}
                         placeholder={'Enter the film budget'} 
                         className={'form-control'} 
-                        value={budget}
-                        onChange={event => setBudget(event.target.value)}
+                        value={film.budget}
+                        onChange={event => setFilm({ ...film, budget: event.target.value })}
                         error={errors.budget ? errors.budget[0] : null}
                     />
                     <InputWithLabel  
@@ -197,8 +192,8 @@ function UpdateFilmPage()
                         label={'Fees ($)'}
                         placeholder={'Enter the film fees'} 
                         className={'form-control'} 
-                        value={fees}
-                        onChange={event => setFees(event.target.value)}
+                        value={film.fees}
+                        onChange={event => setFilm({ ...film, fees: event.target.value })}
                         error={errors.fees ? errors.fees[0] : null}
                     />
                     <InputWithLabel  
@@ -207,8 +202,8 @@ function UpdateFilmPage()
                         label={'Age limit (number only)'}
                         placeholder={'Enter the age limit'} 
                         className={'form-control'} 
-                        value={ageLimit}
-                        onChange={event => setAgeLimit(event.target.value)}
+                        value={film.ageLimit}
+                        onChange={event => setFilm({ ...film, ageLimit: event.target.value })}
                         error={errors.ageLimit ? errors.ageLimit[0] : null}
                     />
                     <InputWithLabel  
@@ -216,16 +211,16 @@ function UpdateFilmPage()
                         label={'Duration'}
                         placeholder={'Enter the film duration'} 
                         className={'form-control'} 
-                        value={duration}
-                        onChange={event => setDuration(event.target.value)}
+                        value={film.duration}
+                        onChange={event => setFilm({ ...film, duration: event.target.value })}
                         error={errors.duration ? errors.duration[0] : null}
                     />
                     <label>Film description</label>
                     <TextArea
                         placeholder="Enter the film description" 
                         allowClear 
-                        value={description} 
-                        onChange={(event) => setDescription(event.target.value)} 
+                        value={film.description} 
+                        onChange={(event) => setFilm({ ...film, description: event.target.value })} 
                     />
                     <button onClick={updateFilm} className="btn btn-success mt-2 mx-auto">Submit</button>
                 </form>

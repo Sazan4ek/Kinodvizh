@@ -1,15 +1,11 @@
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import './Header.css'
-import { useContext } from "react";
-import { AuthContext } from "../../contexts/AuthContextProvider";
+import { useAuth } from "../../contexts/AuthContextProvider";
 import { RiUserLine } from "react-icons/ri";
 
 function Header()
 {
-    const { user, logout } = useContext(AuthContext);
-
-    const location = useLocation();
-    console.log(location);
+    const { user, logout } = useAuth();
 
     return (
         <header className="header-container">

@@ -1,6 +1,6 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './UpdateUserPage';
-import { AuthContext } from '../../contexts/AuthContextProvider';
+import { useAuth } from '../../contexts/AuthContextProvider';
 import { useNavigate, useParams } from 'react-router-dom';
 import axiosClient from '../../axiosClient';
 import InputWithLabel from '../../components/InputWithLabel/InputWithLabel';
@@ -9,7 +9,7 @@ import Error404 from '../Error404/Error404';
 function UpdateUserPage() 
 {
   const { userId } = useParams();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [firstName, setFirstName] = useState(user?.first_name);
   const [lastName, setLastName] = useState(user?.last_name);
   const [errors, setErrors] = useState([]);
@@ -36,6 +36,7 @@ function UpdateUserPage()
         }
       })
   }
+
   useEffect(() => {
     if(!user || userId != user?.id) navigate(-1);
   }, [userId, user])

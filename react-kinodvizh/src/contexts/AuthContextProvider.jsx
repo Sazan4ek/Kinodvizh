@@ -1,72 +1,116 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import axiosClient from "../axiosClient";
 import { useNavigate } from "react-router-dom";
 
-export let AuthContext = createContext({});
+export const AuthContext = createContext({});
+
+const AUTH_KEY = 'IS_LOGGED_IN';
 
 function AuthContextProvider({children})
 {
-    const [user, setUser] = useState(null);
-    const [userRole, setUserRole] = useState(null);
+    const [authState, setAuthState] = useState({
+        user: null,
+        userRole: null,
+        userLoading: true,
+        error: null,
+    });
     const navigate = useNavigate();
 
-    const getUser = async () => {
-        try {
-            await axiosClient.get('/user')
-            .then(({data}) => {setUser(data); setUserRole(data?.role.name)});
-        }
-        catch(error) { console.log(error); }
-    }
+    const handleAuthError = useCallback((error, setErrors) => {
+        setAuthState(prev => {
+            return ({
+            ...prev,    
+            userLoading: false,
+            error,
+        })});
+        localStorage.removeItem(AUTH_KEY);
 
-    const register = async (payload, setErrors) => {
+        if(error.response?.status === 422 && setErrors) {
+            setErrors(error.response?.data?.errors);
+        }
+    }, []);
+
+    const getUser = useCallback(async () => {
         try {
-            localStorage.setItem('IS_LOGGED_IN', 'true');
+            const { data: userData } = await axiosClient.get('/user');
+            setAuthState(prev => ({
+                ...prev, 
+                user: userData,
+                userRole: userData?.role.name,
+                userLoading: false
+            }));
+            
+        } catch (error) { 
+            handleAuthError(error);
+        }
+    }, []);
+
+    const register = useCallback(async (payload, setErrors) => {
+        try {
+            setAuthState(prev => ({
+                ...prev,
+                userLoading: true,
+            }));
             await axiosClient.post('/register', payload);
+            localStorage.setItem(AUTH_KEY, 'true');
             await getUser();
             navigate(-1);
-        }   
-        catch(error) {
-            localStorage.removeItem('IS_LOGGED_IN');
-            if(error.response.status === 422)
-            {
-                setErrors(error.response.data.errors);
-            }
-        };
-    }
-
-    const login = async (payload, setErrors) => {
-        
-        try {
-            localStorage.setItem('IS_LOGGED_IN', 'true');
-            await axiosClient.post('/login', payload);
-            await getUser();
-            navigate(-1);
+        } catch (error) {
+            handleAuthError(error, setErrors);
         }
-        catch(error) {
-            localStorage.removeItem('IS_LOGGED_IN');
-            if(error.response.status === 422)
-            {
-                setErrors(error.response.data.errors);
-            }
-        };
-    }
+    }, []);
 
-    const logout = async () => {
-        localStorage.removeItem('IS_LOGGED_IN');
-        axiosClient.post('/logout').then(() => {
-            setUser(null);
-            setUserRole(null);
-        });
-    }
+    const login = useCallback(async (payload, setErrors) => {
+        try {
+            setAuthState(prev => ({
+                ...prev,
+                userLoading: true,
+            }));
+            await axiosClient.post('/login', payload);
+            localStorage.setItem(AUTH_KEY, 'true');
+            await getUser();
+            navigate(-1);
+        } catch (error) {
+            handleAuthError(error, setErrors);
+        }
+    }, []);
+
+    const logout = useCallback(async () => {
+        try {
+            localStorage.removeItem(AUTH_KEY);
+            await axiosClient.post('/logout');
+            setAuthState(prev => ({
+                ...prev,
+                user: null,
+                userRole: null,
+                userLoading: false,
+                error: null,
+            }));
+        } catch (error) {
+            handleAuthError(error);
+        }
+
+    }, []);  
 
     useEffect(() => {
-        if(!user && localStorage.getItem('IS_LOGGED_IN') === 'true') getUser();
+        const checkAuth = async () => {
+            try {
+                if(localStorage.getItem(AUTH_KEY) === 'true') {
+                    await getUser();
+                } else {
+                    setAuthState(prev => ({ ...prev, userLoading: false }));
+                }
+            } catch (error) {
+                setAuthState(prev => ({ ...prev, userLoading: false }));
+            }
+        };
+
+        checkAuth();
     }, []);
 
     return (
         <AuthContext.Provider value={{
-            user, 
-            userRole,
+            ...authState,
             getUser,
             register,
             login,
@@ -76,4 +120,9 @@ function AuthContextProvider({children})
         </AuthContext.Provider>
     );
 }
+
+export function useAuth() {
+    return useContext(AuthContext);
+}
+
 export default AuthContextProvider;

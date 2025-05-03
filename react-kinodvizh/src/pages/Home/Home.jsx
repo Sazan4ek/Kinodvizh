@@ -23,21 +23,21 @@ function Home()
             rateFrom: 0,
             rateUntil: 10,
             orderBy: "in order",
+            watched: false,
+            favourites: false,
             page: 1,
         });
 
     const [searchText, setSearchText] = useState(filterValues.q);
     const [watchables, setWatchables] = useState([]);
-    const [favourites, setFavourites] = useState(false);
-    const [watched, setWatched] = useState(false);
+
+    console.log(filterValues);
 
     const { user } = useContext(AuthContext);
 
     const getWatchables = async (watchableType, url) => {
         const payload = {
             ...filterValues,
-            favourites,
-            watched,
             userId: user?.id,
             params: {
                 page: filterValues.page
@@ -55,13 +55,9 @@ function Home()
         getWatchables, 
         [
             JSON.stringify(filterValues),
-            favourites, 
-            watched
         ],
         filterValues.watchableType
     );
-
-    console.log(watchables);
     
     const items=[
         {
@@ -109,8 +105,20 @@ function Home()
             <div className="on-top-row">
                 {user ? 
                     <div className="users-preferences-buttons">
-                        <Checkbox style={{fontWeight: 'bold'}} onChange={(event) => setFavourites(event.target.checked)}>favourites</Checkbox>
-                        <Checkbox style={{fontWeight: 'bold'}} onChange={(event) => setWatched(event.target.checked)}>watched ones</Checkbox>
+                        <Checkbox 
+                            style={{fontWeight: 'bold'}} 
+                            checked={(filterValues.favourites === "true")} 
+                            onChange={(event) => setFilterValue("favourites", event.target.checked)}
+                        >
+                            favourites
+                        </Checkbox>
+                        <Checkbox 
+                            style={{fontWeight: 'bold'}} 
+                            checked={(filterValues.watched === "true")} 
+                            onChange={(event) => setFilterValue("watched", event.target.checked)}
+                        >
+                            watched ones
+                        </Checkbox>
                     </div> 
                     : ""
                 }   
@@ -132,6 +140,7 @@ function Home()
                     </Dropdown>
                 </div>
             </div>
+            {error && (<span className='mt-5 fs-3'>{error.message}</span>)}
             {loading && (<span className='mt-5 fs-3'>Loading...</span>)}
             {!loading && (
                 <>

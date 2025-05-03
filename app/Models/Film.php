@@ -88,14 +88,14 @@ class Film extends Model
 
         $userId = $filterData->userId;
 
-        $favourites = $filterData->favourites;
-        if($favourites === true) 
+        $favourites = filter_var($filterData->favourites, FILTER_VALIDATE_BOOL);
+        if($favourites === true && request()->user()) 
             $sqlQuery->whereHas('usersWhoWantedToWatch', function($query) use ($userId) {
                 $query->where('users.id', $userId);
             });
         
-        $watched = $filterData->watched;
-        if($watched === true)
+        $watched = filter_var($filterData->watched, FILTER_VALIDATE_BOOL);
+        if($watched === true && request()->user())
             $sqlQuery->whereHas('usersWhoWatched', function($query) use ($userId) {
                 $query->where('users.id', $userId);
             });
