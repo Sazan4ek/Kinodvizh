@@ -14,19 +14,21 @@ function UpdateSeriesPage()
     const { seriesId } = useParams();
     const [genresId, setGenresId] = useState([]);
     const [genresList, setGenresList] = useState([]);
+    const [series, setSeries] = useState({
+        name: '',
+        country: '',
+        director: '',
+        releaseDate: '', 
+        scenarioMaker: '',
+        producer: '',
+        budget: null,
+        fees: null,
+        ageLimit: null,
+        seasonsCount: null,
+        seriesDuration: '',
+        description: ''
+    });
     const [errors, setErrors] = useState([]);
-    const [name, setName] = useState('');
-    const [country, setCountry] = useState('');
-    const [director, setDirector] = useState('');
-    const [releaseDate, setReleaseDate] = useState('');
-    const [scenarioMaker, setScenarioMaker] = useState('');
-    const [producer, setProducer] = useState('');
-    const [budget, setBudget] = useState(null);
-    const [fees, setFees] = useState(null);
-    const [ageLimit, setAgeLimit] = useState(null);
-    const [seasonsCount, setSeasonsCount] = useState(null);
-    const [seriesDuration, setSeriesDuration] = useState('')
-    const [description, setDescription]= useState('');
 
     const navigate = useNavigate();
 
@@ -34,18 +36,7 @@ function UpdateSeriesPage()
         event.preventDefault();
         const payload = {
             genresId,
-            name,
-            country,
-            director,
-            producer,
-            releaseDate,
-            scenarioMaker,
-            budget,
-            fees,
-            ageLimit,
-            seriesDuration,
-            seasonsCount,
-            description
+            ...series,
         }
         await axiosClient.patch(`admin/series/${seriesId}`, payload)
             .then(() => navigate(-1))
@@ -73,18 +64,20 @@ function UpdateSeriesPage()
             axiosClient.post(`series/${seriesId}`, payload)
                 .then(({data}) => {
                     setGenresId(data?.genres.map((genre) => genre.id));
-                    setName(data?.name);
-                    setCountry(data?.country);
-                    setDirector(data?.director)
-                    setReleaseDate(data?.releaseDate);
-                    setScenarioMaker(data?.scenarioMaker);
-                    setProducer(data?.producer)
-                    setBudget(data?.budget);
-                    setFees(data?.fees);
-                    setAgeLimit(data?.ageLimit)
-                    setSeasonsCount(data?.seasonsCount);
-                    setSeriesDuration(data?.seriesDuration);
-                    setDescription(data?.description);
+                    setSeries({
+                        name: data?.name,
+                        country: data?.country,
+                        director: data?.director,
+                        releaseDate: data?.releaseDate,
+                        scenarioMaker: data?.scenarioMaker,
+                        producer: data?.producer,
+                        budget: data?.budget,
+                        fees: data?.fees,
+                        ageLimit: data?.ageLimit,
+                        seasonsCount: data?.seasonsCount,
+                        seriesDuration: data?.seriesDuration,
+                        description: data?.description,
+                    });
                 })
         );
     };
@@ -121,8 +114,8 @@ function UpdateSeriesPage()
                         label={'Series name'}
                         placeholder={'Enter the series name'} 
                         className={'form-control'} 
-                        value={name}
-                        onChange={event => setName(event.target.value)}
+                        value={series.name}
+                        onChange={event => setSeries({ ...series, name: event.target.value })}
                         error={errors.name ? errors.name[0] : null}
                     />
                     <label>Genres</label>
@@ -149,40 +142,40 @@ function UpdateSeriesPage()
                         label={'Country'}
                         placeholder={'Enter the country'} 
                         className={'form-control'} 
-                        value={country}
-                        onChange={event => setCountry(event.target.value)}
+                        value={series.country}
+                        onChange={event => setSeries({ ...series, country: event.target.value })}
                         error={errors.country ? errors.country[0] : null}
                     />
                     <InputWithLabel  
                         label={'series director'}
                         placeholder={'Enter the series director'} 
                         className={'form-control'} 
-                        value={director}
-                        onChange={event => setDirector(event.target.value)}
+                        value={series.director}
+                        onChange={event => setSeries({ ...series, director: event.target.value })}
                         error={errors.director ? errors.director[0] : null}
                     />
                     <InputWithLabel  
                         label={'series producer'}
                         placeholder={'Enter the series producer'} 
                         className={'form-control'} 
-                        value={producer}
-                        onChange={event => setProducer(event.target.value)}
+                        value={series.producer}
+                        onChange={event => setSeries({ ...series, producer: event.target.value })}
                         error={errors.producer ? errors.producer[0] : null}
                     />
                     <InputWithLabel  
                         label={'Scenario maker'}
                         placeholder={'Enter the scenario maker'} 
                         className={'form-control'} 
-                        value={scenarioMaker}
-                        onChange={event => setScenarioMaker(event.target.value)}
+                        value={series.scenarioMaker}
+                        onChange={event => setSeries({ ...series, scenarioMaker: event.target.value })}
                         error={errors.scenarioMaker ? errors.scenarioMaker[0] : null}
                     />
                     <InputWithLabel  
                         label={'Release date'}
                         type={'date'}
                         className={'form-control'} 
-                        value={releaseDate}
-                        onChange={event => setReleaseDate(event.target.value)}
+                        value={series.releaseDate}
+                        onChange={event => setSeries({ ...series, releaseDate: event.target.value })}
                         error={errors.releaseDate ? errors.releaseDate[0] : null}
                     />
                     <InputWithLabel  
@@ -191,8 +184,8 @@ function UpdateSeriesPage()
                         label={'Budget ($)'}
                         placeholder={'Enter the series budget'} 
                         className={'form-control'} 
-                        value={budget}
-                        onChange={event => setBudget(event.target.value)}
+                        value={series.budget}
+                        onChange={event => setSeries({ ...series, budget: event.target.value })}
                         error={errors.budget ? errors.budget[0] : null}
                     />
                     <InputWithLabel  
@@ -201,8 +194,8 @@ function UpdateSeriesPage()
                         label={'Fees ($)'}
                         placeholder={'Enter the series fees'} 
                         className={'form-control'} 
-                        value={fees}
-                        onChange={event => setFees(event.target.value)}
+                        value={series.fees}
+                        onChange={event => setSeries({ ...series, fees: event.target.value })}
                         error={errors.fees ? errors.fees[0] : null}
                     />
                     <InputWithLabel  
@@ -211,8 +204,8 @@ function UpdateSeriesPage()
                         label={'Age limit (number only)'}
                         placeholder={'Enter the age limit'} 
                         className={'form-control'} 
-                        value={ageLimit}
-                        onChange={event => setAgeLimit(event.target.value)}
+                        value={series.ageLimit}
+                        onChange={event => setSeries({ ...series, ageLimit: event.target.value })}
                         error={errors.ageLimit ? errors.ageLimit[0] : null}
                     />
                     <InputWithLabel  
@@ -220,8 +213,8 @@ function UpdateSeriesPage()
                         label={'Average series duration'}
                         placeholder={'Enter the series duration'} 
                         className={'form-control'} 
-                        value={seriesDuration}
-                        onChange={event => setSeriesDuration(event.target.value)}
+                        value={series.seriesDuration}
+                        onChange={event => setSeries({ ...series, seriesDuration: event.target.value })}
                         error={errors.seriesDuration ? errors.seriesDuration[0] : null}
                     />
                     <InputWithLabel  
@@ -230,16 +223,16 @@ function UpdateSeriesPage()
                         label={'Seasons count'}
                         placeholder={'Enter the seasons count'} 
                         className={'form-control'} 
-                        value={seasonsCount}
-                        onChange={event => setSeasonsCount(event.target.value)}
-                        error={errors.seasonsCount ? errors.v[0] : null}
+                        value={series.seasonsCount}
+                        onChange={event => setSeries({ ...series, seasonsCount: event.target.value })}
+                        error={errors.seasonsCount ? errors.seasonsCount[0] : null}
                     />
                     <label>Series description</label>
                     <TextArea
                         placeholder="Enter the series description" 
                         allowClear 
-                        value={description} 
-                        onChange={(event) => setDescription(event.target.value)} 
+                        value={series.description} 
+                        onChange={(event) => setSeries({ ...series, description: event.target.value })} 
                     />
                     <button onClick={updateSeries} className="btn btn-success mt-2 mx-auto">Submit</button>
                 </form>

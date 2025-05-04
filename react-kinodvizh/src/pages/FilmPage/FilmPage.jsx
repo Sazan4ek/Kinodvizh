@@ -1,11 +1,11 @@
 import { useNavigate, useParams } from "react-router-dom";
 import axiosClient from "../../axiosClient";
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import './FilmPage.css';
 import { IoBookmark, IoEye } from "react-icons/io5";
 import { CiBookmark } from "react-icons/ci";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { AuthContext } from "../../contexts/AuthContextProvider";
+import { useAuth } from "../../contexts/AuthContextProvider";
 import ColorfulRating from "../../components/ColorfulRating/ColorfulRating";
 import ReviewsList from "../../components/ReviewsList/ReviewsList";
 import ReviewForm from "../../components/ReviewForm/ReviewForm";
@@ -26,7 +26,7 @@ function FilmPage()
 
     const navigate = useNavigate();
 
-    const { user, userRole } = useContext(AuthContext);
+    const { user, userRole } = useAuth();
 
     const [IsWantedToWatch, setIsWantedToWatch] = useState(false);
     const [IsWatched, setIsWatched] = useState(false);
