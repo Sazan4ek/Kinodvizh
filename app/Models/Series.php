@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Http\Request;
 
 class Series extends Model
 {
@@ -57,65 +59,76 @@ class Series extends Model
         return $this->morphMany(Review::class, "reviewable");
     }
 
-    static public function getFilteredData($filterData)
+    static public function getFilteredData(Request $request)
     {
-        $sqlQuery = Series::query()->with('materials', function ($query) {
-            $query->where('type', 'poster');
-        })->with(['genres', 'usersWhoWatched', 'usersWhoWantedToWatch']);
-        
-        $genre = $filterData->genre ?? null;
-        if($genre) $sqlQuery->whereHas('genres', function ($query) use ($genre) {
-            $query->where('name', $genre);
-        });
-
-        $country = $filterData->country ?? null;
-        if($country) $sqlQuery->where('country', $country);
-
-        $yearFrom = $filterData->yearFrom ?? null;
-        $yearUntil = $filterData->yearUntil ?? null;
+        $genre = $request->input('genre');
+        $country = $request->input('country');
+        $yearFrom = $request->input('year_from');
+        $yearUntil = $request->input('year_until');
         $dateFrom = "$yearFrom-01-01";    
         $dateUntil = "$yearUntil-12-31"; 
-        if($yearFrom && $yearUntil) $sqlQuery->whereBetween('releaseDate', [$dateFrom, $dateUntil]); 
-        else if($yearFrom) $sqlQuery->where('releaseDate', '>=', $dateFrom);
-        else if($yearUntil) $sqlQuery->where('releaseDate', '<=', $dateUntil);
+        $rateFrom = $request->input('rate_from', 0);
+        $rateUntil = $request->input('rate_until', 10);
+        $searchText = $request->input('q', "");
+        $userId = $request->integer('userId');
+        $favourites = $request->boolean('favourites');
+        $watched = $request->boolean('watched');
+        $orderBy = $request->input('order_by');
+        $page = $request->input('page');
 
-        $rateFrom = $filterData->rateFrom ?? 0;
-        $rateUntil = $filterData->rateUntil ?? 10;
-        $sqlQuery->whereBetween('rating', [$rateFrom, $rateUntil]);
-
-        $searchText = $filterData->q;
-        if($searchText !== "") $sqlQuery->where('name', 'like', "%$searchText%");
-
-        $userId = $filterData->userId;
-
-        $favourites = $filterData->favourites;
-        if($favourites === true) 
-            $sqlQuery->whereHas('usersWhoWantedToWatch', function($query) use ($userId) {
+        $sqlQuery = Series::query()->with('materials', function ($query) {
+            $query->where('type', 'poster');
+        })
+        ->with(['genres', 'usersWhoWatched', 'usersWhoWantedToWatch'])
+        ->when($genre, function (Builder $query, $genre) {
+            $query->whereHas('genres', function (Builder $query) use ($genre) {
+                $query->where('name', $genre);
+            });
+        })
+        ->when($searchText, function (Builder $query) use ($searchText) {
+            $query->where('name', 'like', "%$searchText%");
+        })
+        ->when($country, function (Builder $query, $country) {
+            $query->where('country', $country);
+        })
+        ->when($yearFrom, function (Builder $query) use ($dateFrom) {
+            $query->where('releaseDate', '>=', $dateFrom);
+        })
+        ->when($yearUntil, function (Builder $query) use ($dateUntil) {
+            $query->where('releaseDate', '<=', $dateUntil);
+        })
+        ->when($favourites && request()->user(), function (Builder $query) use ($userId) {
+            $query->whereHas('usersWhoWantedToWatch', function ($query) use ($userId) {
                 $query->where('users.id', $userId);
             });
-        
-        $watched = $filterData->watched;
-        if($watched === true)
-            $sqlQuery->whereHas('usersWhoWatched', function($query) use ($userId) {
+        })
+        ->when($watched && request()->user(), function (Builder $query) use ($userId) {
+            $query->whereHas('usersWhoWatched', function ($query) use ($userId) {
                 $query->where('users.id', $userId);
             });
+        })
+        ->when($orderBy, function (Builder $query, $orderBy) {
+            switch ($orderBy) {
+                case 'by marks count':
+                    $query->orderBy('marksCount', 'desc');
+                    break;
+                case 'by rating':
+                    $query->orderBy('rating', 'desc');
+                    break;
+                case 'by release date':
+                    $query->orderBy('releaseDate', 'desc');
+                    break;
+                case 'by name':
+                    $query->orderBy('name', 'asc');
+                    break;
+                default: 
+                    break;
+            }
+        })
+        ->whereBetween('rating', [$rateFrom, $rateUntil]);
 
-        $orderBy = $filterData->orderBy;
-        if($orderBy === 'by marks count') $sqlQuery->orderBy('marksCount', 'desc');
-        else if($orderBy === 'by rating') $sqlQuery->orderBy('rating', 'desc');
-        else if($orderBy === 'by release date') $sqlQuery->orderBy('releaseDate', 'desc');
-        else if($orderBy === 'by name') $sqlQuery->orderBy('name', 'asc');
+        $filteredSeries = $sqlQuery->paginate(20, ['*'], 'page', max(1, min($page, $sqlQuery->paginate(20)->lastPage())));    
 
-        $filteredSeries = $sqlQuery->paginate(20);
-
-        if($filteredSeries->lastPage() < $filterData->page)
-        {
-            $filteredSeries = $sqlQuery->paginate(20, ['*'], 'page', $filteredSeries->lastPage());
-        }
-        else if($filterData->page < 1) 
-        {
-            $filteredSeries = $sqlQuery->paginate(20, ['*'], 'page', 1);
-        }
         return $filteredSeries;
     }
 

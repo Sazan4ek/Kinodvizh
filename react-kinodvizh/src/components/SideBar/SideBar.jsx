@@ -9,20 +9,20 @@ function SideBar()
     const actualYear = new Date().getFullYear();
     const { filterValues, setFilterValue, setMultipleFilterValues } = 
         useWatchableFilters({
-            watchableType: "films",
-            yearFrom: 1900,
-            yearUntil: actualYear,
-            rateFrom: 0,
-            rateUntil: 10,
-            orderBy: "in order",
+            watchable_type: "films",
+            year_from: 1900,
+            year_until: actualYear,
+            rate_from: 0,
+            rate_until: 10,
+            order_by: "in order",
         });
     
-    console.log(filterValues.watchableType);
+    console.log(filterValues.watchable_type);
 
     const [countriesList, setCountriesList] = useState([]);
     const [genresList, setGenresList] = useState([]);
     useEffect(() => {
-        axiosClient.get(`/${filterValues.watchableType}/countries`).then(({data}) => {
+        axiosClient.get(`/${filterValues.watchable_type}/countries`).then(({data}) => {
             setCountriesList(data);
         })
         .catch(error => console.log(error));
@@ -31,7 +31,7 @@ function SideBar()
             setGenresList(data);
         })
         .catch(error => console.log(error));
-    }, [filterValues.watchableType]);
+    }, [filterValues.watchable_type]);
 
     return (
         <div className="sidebar">
@@ -41,15 +41,15 @@ function SideBar()
             <div className="filter-panel">
                 <div className="watchable-type-switch">
                     <button 
-                        onClick={filterValues.watchableType === 'films' ? null : () => setFilterValue('watchableType', 'films')} 
-                        className={(filterValues.watchableType === 'films'? 'active-btn' : '') + ' watchable-type-btn'}
+                        onClick={filterValues.watchable_type === 'films' ? null : () => setFilterValue('watchable_type', 'films')} 
+                        className={(filterValues.watchable_type === 'films'? 'active-btn' : '') + ' watchable-type-btn'}
                     >
                         Films
                     </button>
 
                     <button 
-                        onClick={filterValues.watchableType === 'series' ? null : () => setFilterValue('watchableType', 'series')} 
-                        className={(filterValues.watchableType === 'series'? 'active-btn' : '') + ' watchable-type-btn'}
+                        onClick={filterValues.watchable_type === 'series' ? null : () => setFilterValue('watchable_type', 'series')} 
+                        className={(filterValues.watchable_type === 'series'? 'active-btn' : '') + ' watchable-type-btn'}
                     >
                         Series
                     </button>
@@ -102,11 +102,11 @@ function SideBar()
                         range 
                         min={1900}
                         max={actualYear}
-                        defaultValue={[filterValues.yearFrom, filterValues.yearUntil]}
-                        onChangeComplete={([yearFrom, yearUntil]) => {
+                        defaultValue={[filterValues.year_from, filterValues.year_until]}
+                        onChangeComplete={([year_from, year_until]) => {
                             setMultipleFilterValues({
-                                yearFrom,
-                                yearUntil,
+                                year_from,
+                                year_until,
                             });
                         }}
                         style={{ width: '70%'}}
@@ -121,12 +121,12 @@ function SideBar()
                         range 
                         min={0}
                         max={10}
-                        defaultValue={[filterValues.rateFrom, filterValues.rateUntil]} 
+                        defaultValue={[filterValues.rate_from, filterValues.rate_until]} 
                         step={0.1}
-                        onChangeComplete={([rateFrom, rateUntil]) => {
+                        onChangeComplete={([rate_from, rate_until]) => {
                             setMultipleFilterValues({
-                                rateFrom,
-                                rateUntil,
+                                rate_from,
+                                rate_until,
                             });
                         }}
                         style={{ width: '70%'}}

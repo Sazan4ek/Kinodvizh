@@ -17,12 +17,12 @@ function Home()
     const actualYear = new Date().getFullYear();
     const { filterValues, setFilterValue } = 
         useWatchableFilters({
-            watchableType: "films",
-            yearFrom: 1900,
-            yearUntil: actualYear,
-            rateFrom: 0,
-            rateUntil: 10,
-            orderBy: "in order",
+            watchable_type: "films",
+            year_from: 1900,
+            year_until: actualYear,
+            rate_from: 0,
+            rate_until: 10,
+            order_by: "in order",
             watched: false,
             favourites: false,
             page: 1,
@@ -56,7 +56,7 @@ function Home()
         [
             JSON.stringify(filterValues),
         ],
-        filterValues.watchableType
+        filterValues.watchable_type
     );
     
     const items=[
@@ -127,13 +127,13 @@ function Home()
                         menu={{
                             items,
                             selectable: true,
-                            defaultSelectedKeys: [filterValues.orderBy],
-                            onClick: (item) => {setFilterValue("orderBy", item.key)}
+                            defaultSelectedKeys: [filterValues.order_by],
+                            onClick: (item) => {setFilterValue("order_by", item.key)}
                         }}
                     >
                         <Typography.Link>
                             <Space>
-                                <span className='order-by-value'>Sort {filterValues.orderBy ?? items[0].label}</span>
+                                <span className='order-by-value'>Sort {filterValues.order_by ?? items[0].label}</span>
                             <DownOutlined style={{color: 'black'}}/>
                             </Space>
                         </Typography.Link>
@@ -144,7 +144,7 @@ function Home()
             {loading && (<span className='mt-5 fs-3'>Loading...</span>)}
             {!loading && (
                 <>
-                    <WatchablesList watchables={watchables} type={filterValues.watchableType}/>
+                    <WatchablesList watchables={watchables} type={filterValues.watchable_type}/>
                     <Pagination links={watchables.links} getWatchables={getWatchables}/>
                 </>
             )}

@@ -125,6 +125,7 @@ function UpdateSeriesPage()
                             allowClear
                             style={{
                                 width: '100%',
+                                zIndex: 0,
                             }}
                             placeholder="Please select"
                             onChange={(genres) => setGenresId(genres)}

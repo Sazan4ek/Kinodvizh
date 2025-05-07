@@ -6,13 +6,13 @@ import { BiLike } from "react-icons/bi";
 import { BiSolidLike } from "react-icons/bi";
 import { BiSolidDislike } from "react-icons/bi";
 import { BiDislike } from "react-icons/bi";
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import axiosClient from '../../axiosClient';
-import { AuthContext } from '../../contexts/AuthContextProvider';
+import { useAuth } from '../../contexts/AuthContextProvider';
 
 function ReviewCard({review})
 {
-    const { userRole } = useContext(AuthContext);
+    const { userRole } = useAuth();
 
     const [likesCount, setLikesCount] = useState(review?.likesCount);
     const [dislikesCount, setDislikesCount] = useState(review?.dislikesCount);
@@ -20,7 +20,7 @@ function ReviewCard({review})
     const [isDisliked, setIsDisliked] = useState(false);
     const [reviewText, setReviewText] = useState(review.text);
     const writer = review?.user;
-    const desc = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    const marks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
     const blockReview = async (reviewId) => {
         await axiosClient.patch(`admin/reviews/${reviewId}`)
@@ -67,7 +67,7 @@ function ReviewCard({review})
                     <Rate
                         count={10} 
                         disabled
-                        tooltips={desc} 
+                        tooltips={marks} 
                         value={review?.rating} 
                         className="rate"
                         style={{fontSize: '30px'}}
