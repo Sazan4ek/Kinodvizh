@@ -14,7 +14,7 @@ class StorageFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    static protected $is_poster = true;
+    static protected bool $is_poster = true;
     
     public function definition(): array
     {

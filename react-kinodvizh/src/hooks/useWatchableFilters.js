@@ -7,7 +7,6 @@ const useWatchableFilters = (initialValue) => {
     const getFilterValues = () => {
         return Object.fromEntries(searchParams.entries());
     };
-    console.log(getFilterValues());
 
     const setFilterValue = (name, value) => {
         const newParams = getFilterValues();
