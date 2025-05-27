@@ -16,6 +16,9 @@ class GenreSeeder extends Seeder
      */
     public function run(): void
     {
-        Genre::factory(10)->has(Film::factory(3)->has(Storage::factory(2), 'materials'), 'films')->has(Series::factory(2)->has(Storage::factory(2), 'materials'), 'series')->create();
+        Genre::factory(10)
+            ->has(Film::factory(3)->has(Storage::factory(2), 'materials'), 'films')
+            ->has(Series::factory(2)->has(Storage::factory(2), 'materials'), 'series')
+            ->create();
     }
 }

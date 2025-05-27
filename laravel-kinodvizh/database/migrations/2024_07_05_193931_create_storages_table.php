@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->nullableMorphs('storable');
             $table->string('type', 45);
-            $table->string('uri', 300);
+            $table->string('uri', 500);
             $table->timestamps();
         });
     }

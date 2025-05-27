@@ -15,6 +15,9 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(10)->has(Review::factory(3), 'reviews')->for(Role::all()->random())->create();
+        User::factory(10)
+            ->has(Review::factory(3), 'reviews')
+            ->for(Role::all()->random())
+            ->create();
     }
 }

@@ -14,10 +14,29 @@ class GenreFactory extends Factory
      *
      * @return array<string, mixed>
      */
+
+    protected const GENRES = [
+        'action',
+        'drama',
+        'romantic',
+        'comedy',
+        'adventure',
+        'animation',
+        'detective',
+        'horror',
+        'fantasy',
+        'science-fiction',
+        'crime and mystery'
+    ];
+    
     public function definition(): array
     {
+        static $index = 0;
+
         return [
-            'name' => fake()->unique()->word(), 
+            'name' => $index >= count(self::GENRES)
+                ? fake()->unique()->word()
+                : self::GENRES[$index++], 
             'image' => fake()->imageUrl(),
         ];
     }

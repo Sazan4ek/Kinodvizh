@@ -15,6 +15,9 @@ class SeriesSeeder extends Seeder
      */
     public function run(): void
     {
-        Series::factory()->has(Genre::factory(), 'genres')->has(Storage::factory(2), 'materials')->create();
+        Series::factory()
+            ->has(Genre::factory(), 'genres')
+            ->has(Storage::factory(2), 'materials')
+            ->create();
     }
 }
