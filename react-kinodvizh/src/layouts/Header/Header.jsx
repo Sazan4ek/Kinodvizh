@@ -13,9 +13,9 @@ function Header()
                 <img src="/img/kinodvizh-high-resolution-logo-transparent.png" alt="logo-image" height={'100%'}/>
             </div>
             <nav className="nav-bar">
-                <NavLink className="nav-item" to={{ pathname: '/', search: "watchableType=films" }}>Home</NavLink>
-                <NavLink className="nav-item" to={{ pathname: '/', search: "watchableType=films" }}>Films</NavLink>
-                <NavLink className="nav-item" to={{ pathname: '/', search: "watchableType=series" }}>Series</NavLink>
+                <NavLink className="nav-item" to={{ pathname: '/', search: "watchable_type=films" }}>Home</NavLink>
+                <NavLink className="nav-item" to={{ pathname: '/', search: "watchable_type=films" }}>Films</NavLink>
+                <NavLink className="nav-item" to={{ pathname: '/', search: "watchable_type=series" }}>Series</NavLink>
             </nav>
             <div className="user-panel">
                 {user ? (

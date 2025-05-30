@@ -31,8 +31,6 @@ function Home()
     const [searchText, setSearchText] = useState(filterValues.q);
     const [watchables, setWatchables] = useState([]);
 
-    console.log(filterValues);
-
     const { user } = useContext(AuthContext);
 
     const getWatchables = async (watchableType, url) => {

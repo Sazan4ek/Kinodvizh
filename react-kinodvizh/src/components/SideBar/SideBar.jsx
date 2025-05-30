@@ -16,21 +16,22 @@ function SideBar()
             rate_until: 10,
             order_by: "in order",
         });
-    
-    console.log(filterValues.watchable_type);
 
     const [countriesList, setCountriesList] = useState([]);
     const [genresList, setGenresList] = useState([]);
+    
     useEffect(() => {
-        axiosClient.get(`/${filterValues.watchable_type}/countries`).then(({data}) => {
-            setCountriesList(data);
-        })
-        .catch(error => console.log(error));
+        axiosClient.get(`/${filterValues.watchable_type}/countries`)
+            .then(({data}) => {
+                setCountriesList(data);
+            })
+            .catch(error => console.log(error));
 
-        axiosClient.get(`/genres`).then(({data}) => {
-            setGenresList(data);
-        })
-        .catch(error => console.log(error));
+        axiosClient.get(`/genres`)
+            .then(({data}) => {
+                setGenresList(data);
+            })
+            .catch(error => console.log(error));
     }, [filterValues.watchable_type]);
 
     return (
