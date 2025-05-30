@@ -1,3 +1,4 @@
+ссылка на сайт: `https://kinodvizh.up.railway.app/`
 **Инструкция по запуску сайта**:
 - В нужной папке вызовите команду: `git clone https://github.com/Sazan4ek/Kinodvizh.git`, которая копирует проект на ваш локальный репозиторий
 - В этой же папке: `cd Kinodvizh`
