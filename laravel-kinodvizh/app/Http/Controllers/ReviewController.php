@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReviewRequest;
 use App\Models\Film;
 use App\Models\Review;
 use App\Models\Series;
@@ -9,13 +10,9 @@ use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
-    public function store(Request $request)
+    public function store(ReviewRequest $request)
     {
-        $review = Review::create([
-            'rating' => $request->rating,
-            'text' => $request->text ?? "",
-            'user_id' => $request->userId
-        ]);
+        $review = Review::create($request->all());
 
         if($request->watchableType === 'film') $watchable = Film::findOrFail($request->filmId);
         else $watchable = Series::findOrFail($request->seriesId);

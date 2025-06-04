@@ -3,7 +3,7 @@ import ColorfulRating from "../ColorfulRating/ColorfulRating";
 import './ReviewForm.css';
 import { Rate } from 'antd';
 import { Input } from 'antd';
-import { AuthContext } from "../../contexts/AuthContextProvider";
+import { useAuth } from "../../contexts/AuthContextProvider";
 import axiosClient from "../../axiosClient";
 import { useNavigate } from "react-router-dom";
 
@@ -11,7 +11,7 @@ const { TextArea } = Input;
 
 function ReviewForm({watchableType, watchable, setReviews, rating, setRating, marksCount, setMarksCount})
 {
-    const { user } = useContext(AuthContext);
+    const { user } = useAuth();
 
     const desc = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     const [inputRating, setInputRating] = useState(0);
@@ -25,9 +25,10 @@ function ReviewForm({watchableType, watchable, setReviews, rating, setRating, ma
         const payload = {
             text:  reviewText,
             rating: inputRating,
-            userId: user?.id,
+            user_id: user?.id,
             watchableType: watchableType
         }
+        
         if(watchableType === 'film') payload.filmId = watchable?.id;
         else payload.seriesId = watchable?.id;
 

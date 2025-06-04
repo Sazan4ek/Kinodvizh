@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './ReviewCard.css';
 import { LuUserRound } from "react-icons/lu";
-import { Rate } from 'antd';
+import { Rate, Spin } from 'antd';
 import { BiLike } from "react-icons/bi";
 import { BiSolidLike } from "react-icons/bi";
 import { BiSolidDislike } from "react-icons/bi";
@@ -10,15 +10,20 @@ import { useState } from 'react';
 import axiosClient from '../../axiosClient';
 import { useAuth } from '../../contexts/AuthContextProvider';
 
-function ReviewCard({review})
+function ReviewCard({ review })
 {
-    const { userRole } = useAuth();
+    const { user, userRole } = useAuth();
 
-    const [likesCount, setLikesCount] = useState(review?.likesCount);
-    const [dislikesCount, setDislikesCount] = useState(review?.dislikesCount);
-    const [isLiked, setIsLiked] = useState(false);
-    const [isDisliked, setIsDisliked] = useState(false);
+    const [voteStatus, setVoteStatus] = useState({
+        likesCount: review?.likesCount,
+        dislikesCount: review?.dislikesCount,
+        isLiked: false,
+        isDisliked: false,
+        isVoteLoading: false
+    });
+
     const [reviewText, setReviewText] = useState(review.text);
+    const navigate = useNavigate();
     const writer = review?.user;
     const marks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
@@ -29,27 +34,69 @@ function ReviewCard({review})
     }
 
     const toggleLike = async (action) => {
+        if(!user) navigate('/login');
+
         const payload = {
             action: action
         }
-        axiosClient.patch(`/reviews/${review?.id}/toggleLike`, payload)
+
+        setVoteStatus(voteStatus => {
+            return {
+                ...voteStatus,
+                isVoteLoading: true
+            };
+        });
+
+        await axiosClient.patch(`/reviews/${review?.id}/toggleLike`, payload)
             .then(({data}) => {
-                if(action === 'add') setIsLiked(true);
-                else setIsLiked(false);
-                setLikesCount(data);
-            })
+                setVoteStatus(voteStatus => {
+                    return {
+                        ...voteStatus,
+                        likesCount: data,
+                        isLiked: (action === 'add')
+                    };
+                });
+                if(action === 'add' && voteStatus.isDisliked) toggleDislike('subtract');
+                else setVoteStatus(voteStatus => {
+                    return {
+                        ...voteStatus,
+                        isVoteLoading: false
+                    }
+                })
+            });
     }
 
     const toggleDislike = async (action) => {
+        if(!user) navigate('/login');
+
         const payload = {
             action: action
         }
+        
+        setVoteStatus(voteStatus => {
+            return {
+                ...voteStatus,
+                isVoteLoading: true
+            };
+        });
+
         await axiosClient.patch(`/reviews/${review?.id}/toggleDislike`, payload)
             .then(({data}) => {
-                if(action === 'add') setIsDisliked(true);
-                else setIsDisliked(false);
-                setDislikesCount(data);
-            })
+                setVoteStatus(voteStatus => {
+                    return {
+                        ...voteStatus,
+                        dislikesCount: data,
+                        isDisliked: (action === 'add')
+                    };
+                });
+                if(action === 'add' && voteStatus.isLiked) toggleLike('subtract');
+                else setVoteStatus(voteStatus => {
+                    return {
+                        ...voteStatus,
+                        isVoteLoading: false
+                    }
+                })
+            });
     }
 
     return (
@@ -85,22 +132,26 @@ function ReviewCard({review})
                         <button onClick={() => blockReview(review?.id)} className='btn btn-danger'>Block the review text</button>
                     </div>
                 )}
-                <span>
-                    {(isLiked ? (
-                        <BiSolidLike onClick={() => toggleLike('subtract') } className='review-like'/> 
-                    ) : (
-                        <BiLike onClick={() => {toggleLike('add'); if(isDisliked) toggleDislike('subtract'); }} className='review-like'/>
-                    ))} 
-                    {likesCount}
-                </span>
-                <span>
-                    {(isDisliked ? (
-                        <BiSolidDislike onClick={() => toggleDislike('subtract') }className='review-like'/> 
-                    ) : (
-                        <BiDislike onClick={() => {toggleDislike('add'); if(isLiked) toggleLike('subtract');}} className='review-like'/>
-                    ))} 
-                    {dislikesCount}
-                </span>
+                {voteStatus.isVoteLoading 
+                    ? <Spin spinning size='large'/>
+                    : (<>
+                        <span>
+                            {(voteStatus.isLiked ? (
+                                <BiSolidLike onClick={() => toggleLike('subtract') } className='review-like'/> 
+                            ) : (
+                                <BiLike onClick={() => toggleLike('add') } className='review-like'/>
+                            ))} 
+                            {voteStatus.likesCount}
+                        </span>
+                        <span>
+                            {(voteStatus.isDisliked ? (
+                                <BiSolidDislike onClick={() => toggleDislike('subtract') } className='review-like'/> 
+                            ) : (
+                                <BiDislike onClick={() => toggleDislike('add') } className='review-like'/>
+                            ))} 
+                            {voteStatus.dislikesCount}
+                        </span>
+                    </>)}
             </div>
         </div>
     )
